@@ -104,7 +104,7 @@ img{max-width:100%;display:block;}
 @keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-18px) scale(1.05);}}
 
 .header-inner{max-width:760px;margin:0 auto;position:relative;z-index:1;}
-.brand-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+.brand-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
 .logo-placeholder{
   width:56px;height:56px;flex:none;border-radius:14px;
   background:rgba(255,255,255,.08);
@@ -165,19 +165,15 @@ img{max-width:100%;display:block;}
 .timer-badge #timerValue{font-variant-numeric:tabular-nums;color:var(--amber-400);}
 .timer-badge.is-warning #timerValue{color:#ff8080;}
 
+.lang-toggle-row{display:flex;justify-content:flex-end;position:relative;z-index:1;margin-bottom:-4px;}
 .lang-toggle{
-  display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
-  border:1px solid rgba(255,255,255,.28);color:#fff;font-size:12.5px;font-weight:700;
-  padding:9px 16px;border-radius:99px;cursor:pointer;transition:background .18s,transform .12s,box-shadow .18s;
-  margin-left:auto;box-shadow:0 4px 14px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.18);
-  backdrop-filter:blur(6px);
+  display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12.5px;font-weight:700;
+  padding:7px 13px;border-radius:99px;cursor:pointer;transition:background .18s,transform .12s;
 }
-.lang-toggle:hover{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.1));box-shadow:0 6px 18px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.22);}
+.lang-toggle:hover{background:rgba(255,255,255,.16);}
 .lang-toggle:active{transform:scale(.96);}
-.lang-toggle svg{width:15px;height:15px;color:var(--cyan-400);}
-.lang-toggle .lt-chevron{width:11px;height:11px;color:rgba(255,255,255,.55);margin-left:1px;}
-@media (max-width:520px){.lang-toggle{margin-left:0;order:3;width:100%;justify-content:center;margin-top:6px;}}
+.lang-toggle svg{width:14px;height:14px;color:var(--cyan-400);}
 
 /* Progress indicator ------------------------------------------------- */
 .progress-wrap{
@@ -560,26 +556,28 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
         <h1 id="schoolName">CENTRE DE FORMATION EN INFORMATIQUE</h1>
         <!-- ^ Changez le nom de l'école ici (id="schoolName"), ou dans le JS via CONFIG.schoolName -->
       </div>
+    </div>
 
+    <div class="lang-toggle-row">
       <button type="button" class="lang-toggle" id="btnLangToggle" aria-label="Changer la langue / Chanje lang">
-        <svg class="icon"><use href="#ic-globe"/></svg><span id="langToggleLabel">Kreyòl</span><svg class="icon lt-chevron"><use href="#ic-chevron-right"/></svg>
+        <svg><use href="#ic-globe"/></svg><span id="langToggleLabel">Kreyòl</span>
       </button>
     </div>
 
     <div class="header-copy">
-      <div class="kicker"><svg class="icon"><use href="#ic-bulb"/></svg> <span data-i18n="kicker">Test d'évaluation initiale — niveau débutant</span></div>
+      <div class="kicker"><svg><use href="#ic-bulb"/></svg> <span data-i18n="kicker">Test d'évaluation initiale — niveau débutant</span></div>
       <h2 data-i18n="h2title">Découvrons votre niveau ensemble</h2>
       <p class="tagline" data-i18n="tagline">Ce test n'est pas un piège : il nous aide simplement à mieux comprendre votre façon de réfléchir. Répondez avec vos propres mots — il n'est pas nécessaire d'avoir déjà étudié l'informatique.</p>
     </div>
 
     <div class="feature-row">
-      <div class="feature-chip"><span class="fi"><svg class="icon"><use href="#ic-clock"/></svg></span><span data-i18n="chip1">Environ 45 minutes</span></div>
-      <div class="feature-chip"><span class="fi"><svg class="icon"><use href="#ic-book"/></svg></span><span data-i18n="chip2">20 questions de réflexion</span></div>
-      <div class="feature-chip"><span class="fi"><svg class="icon"><use href="#ic-bulb"/></svg></span><span data-i18n="chip3">Aucune connaissance requise</span></div>
-      <div class="feature-chip"><span class="fi"><svg class="icon"><use href="#ic-user"/></svg></span><span data-i18n="chip4">Répondez dans vos propres mots</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-clock"/></svg></span><span data-i18n="chip1">Environ 45 minutes</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-book"/></svg></span><span data-i18n="chip2">20 questions de réflexion</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-bulb"/></svg></span><span data-i18n="chip3">Aucune connaissance requise</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-user"/></svg></span><span data-i18n="chip4">Répondez dans vos propres mots</span></div>
     </div>
 
-    <div class="timer-badge" id="timerBadge"><svg class="icon"><use href="#ic-clock"/></svg><span data-i18n="timerLabel">Temps suggéré restant :</span> <span id="timerValue">45:00</span></div>
+    <div class="timer-badge" id="timerBadge"><svg><use href="#ic-clock"/></svg><span data-i18n="timerLabel">Temps suggéré restant :</span> <span id="timerValue">45:00</span></div>
 
     <nav class="progress-wrap" aria-label="Progression du test">
       <div class="progress-top">
@@ -606,11 +604,11 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     </div>
 
     <div class="banner banner-error" id="globalError" role="alert" style="display:none;">
-      <svg class="icon"><use href="#ic-alert"/></svg><span id="globalErrorText">Veuillez répondre aux questions en surbrillance avant de continuer.</span>
+      <svg><use href="#ic-alert"/></svg><span id="globalErrorText">Veuillez répondre aux questions en surbrillance avant de continuer.</span>
     </div>
 
     <div class="banner banner-info" id="draftBanner" role="status" style="display:none;">
-      <svg class="icon"><use href="#ic-clock"/></svg>
+      <svg><use href="#ic-clock"/></svg>
       <span id="draftBannerText"></span>
       <div class="draft-banner-actions">
         <button type="button" class="btn btn-ghost" id="btnDraftRestart">Recommencer</button>
@@ -620,7 +618,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 1 — INFORMATIONS DU CANDIDAT ============================= -->
     <section class="step-panel is-active" data-step="1" aria-labelledby="s1h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-user"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-user"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s1eyebrow">Étape 1 sur 5</span>
         <h3 id="s1h" data-i18n="s1title">Informations du candidat</h3>
@@ -628,7 +626,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
       </div>
 
       <div class="fee-note">
-        <svg class="icon"><use href="#ic-bulb"/></svg>
+        <svg><use href="#ic-bulb"/></svg>
         <p><strong data-i18n="s1consigneTitre">Consignes :</strong> <span data-i18n="s1consigneTexte">ce test n'est pas destiné à vous piéger. Répondez avec vos propres mots ; si vous ne connaissez pas une réponse, essayez quand même d'expliquer ce que vous pensez. Il n'est pas nécessaire d'avoir déjà étudié l'informatique pour réussir ce test.</span></p>
       </div>
 
@@ -636,12 +634,12 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
         <div class="field">
           <label for="prenom"><span data-i18n="labelPrenom">Prénom</span> <span class="req">*</span></label>
           <input type="text" id="prenom" name="prenom" required autocomplete="given-name">
-          <span class="error-msg"><svg class="icon"><use href="#ic-alert"/></svg><span data-i18n="errPrenom">Le prénom est obligatoire.</span></span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errPrenom">Le prénom est obligatoire.</span></span>
         </div>
         <div class="field">
           <label for="nomFamille"><span data-i18n="labelNomFamille">Nom de famille</span> <span class="req">*</span></label>
           <input type="text" id="nomFamille" name="nomFamille" required autocomplete="family-name">
-          <span class="error-msg"><svg class="icon"><use href="#ic-alert"/></svg><span data-i18n="errNomFamille">Le nom de famille est obligatoire.</span></span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errNomFamille">Le nom de famille est obligatoire.</span></span>
         </div>
       </div>
 
@@ -649,12 +647,12 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
         <div class="field">
           <label for="age"><span data-i18n="labelAge">Âge</span> <span class="req">*</span></label>
           <input type="number" id="age" name="age" min="5" max="99" step="1" required inputmode="numeric">
-          <span class="error-msg"><svg class="icon"><use href="#ic-alert"/></svg><span data-i18n="errAge">Veuillez indiquer un âge valide.</span></span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errAge">Veuillez indiquer un âge valide.</span></span>
         </div>
         <div class="field">
           <label for="telephone"><span data-i18n="labelTelephone">Téléphone</span> <span class="req">*</span></label>
           <input type="tel" id="telephone" name="telephone" required placeholder="+509 00 00 0000" autocomplete="tel">
-          <span class="error-msg"><svg class="icon"><use href="#ic-alert"/></svg><span data-i18n="errTelephone">Numéro de téléphone invalide.</span></span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errTelephone">Numéro de téléphone invalide.</span></span>
         </div>
       </div>
 
@@ -665,7 +663,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
       <div class="question-card is-bonus" style="margin-top:18px;">
         <div class="q-head">
-          <span class="q-num"><svg class="icon" style="width:15px;height:15px;"><use href="#ic-smartphone"/></svg></span>
+          <span class="q-num"><svg style="width:15px;height:15px;"><use href="#ic-smartphone"/></svg></span>
           <div>
             <div class="q-label"><span data-i18n="bonusAppareilLabel">Avez-vous accès à un ordinateur ou un smartphone ?</span><span class="q-bonus-tag" data-i18n="bonusTag">Question bonus</span></div>
             <div class="q-hint" data-i18n="bonusAppareilHint">Cette question n'affecte pas votre note — elle nous aide simplement à mieux vous accompagner.</div>
@@ -681,7 +679,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 2 — PARTIE 1 ============================= -->
     <section class="step-panel" data-step="2" aria-labelledby="s2h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-cpu"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-cpu"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s2eyebrow">Étape 2 sur 5</span>
         <h3 id="s2h"><span data-i18n="s2title">Partie 1 — Connaissances générales</span><span class="step-score-pill">/10</span></h3>
@@ -692,7 +690,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 3 — PARTIE 2 ============================= -->
     <section class="step-panel" data-step="3" aria-labelledby="s3h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-target"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-target"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s3eyebrow">Étape 3 sur 5</span>
         <h3 id="s3h"><span data-i18n="s3title">Partie 2 — Logique et réflexion</span><span class="step-score-pill">/10</span></h3>
@@ -703,7 +701,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 4 — PARTIE 3 ============================= -->
     <section class="step-panel" data-step="4" aria-labelledby="s4h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-briefcase"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-briefcase"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s4eyebrow">Étape 4 sur 5</span>
         <h3 id="s4h"><span data-i18n="s4title">Partie 3 — Situations pratiques</span><span class="step-score-pill">/10</span></h3>
@@ -714,7 +712,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 5 — PARTIE 4 ============================= -->
     <section class="step-panel" data-step="5" aria-labelledby="s5h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-award"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-award"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s5eyebrow">Étape 5 sur 5</span>
         <h3 id="s5h"><span data-i18n="s5title">Partie 4 — Créativité et motivation</span><span class="step-score-pill">/10</span></h3>
@@ -724,7 +722,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
       <div class="question-card is-bonus">
         <div class="q-head">
-          <span class="q-num"><svg class="icon" style="width:15px;height:15px;"><use href="#ic-message"/></svg></span>
+          <span class="q-num"><svg style="width:15px;height:15px;"><use href="#ic-message"/></svg></span>
           <div>
             <div class="q-label"><span data-i18n="bonusSourceLabel">Comment avez-vous entendu parler de notre centre de formation ?</span><span class="q-bonus-tag" data-i18n="bonusTag">Question bonus</span></div>
             <div class="q-hint" data-i18n="bonusSourceHint">Cette question n'affecte pas votre note.</div>
@@ -736,7 +734,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 
     <!-- ============================= ÉTAPE 6 — RÉCAPITULATIF ============================= -->
     <section class="step-panel" data-step="6" aria-labelledby="s6h">
-      <div class="step-icon"><svg class="icon"><use href="#ic-check"/></svg></div>
+      <div class="step-icon"><svg><use href="#ic-check"/></svg></div>
       <div class="step-head">
         <span class="step-eyebrow" data-i18n="s6eyebrow">Dernière vérification</span>
         <h3 id="s6h" data-i18n="s6title">Récapitulatif de votre test</h3>
@@ -749,7 +747,7 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
           <input type="checkbox" id="consentPropre" name="consentPropre">
           <label for="consentPropre" data-i18n="consentLabel">Je confirme que ce sont mes propres réponses, faites sans aide extérieure.</label>
         </div>
-        <span class="error-msg" id="err-consent"><svg class="icon"><use href="#ic-alert"/></svg><span data-i18n="errConsent">Vous devez confirmer avant d'envoyer votre test.</span></span>
+        <span class="error-msg" id="err-consent"><svg><use href="#ic-alert"/></svg><span data-i18n="errConsent">Vous devez confirmer avant d'envoyer votre test.</span></span>
       </div>
     </section>
 
@@ -760,8 +758,8 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
      NAVIGATION (sticky en bas sur mobile)
 ========================================================================= -->
 <div class="form-nav">
-  <button type="button" class="btn btn-ghost" id="btnPrev"><svg class="icon"><use href="#ic-chevron-left"/></svg><span data-i18n="btnPrev">Précédent</span></button>
-  <button type="button" class="btn btn-primary btn-block" id="btnNext"><span id="btnNextLabel" data-i18n="btnNext">Suivant</span><svg class="icon"><use href="#ic-chevron-right"/></svg></button>
+  <button type="button" class="btn btn-ghost" id="btnPrev"><svg><use href="#ic-chevron-left"/></svg><span data-i18n="btnPrev">Précédent</span></button>
+  <button type="button" class="btn btn-primary btn-block" id="btnNext"><span id="btnNextLabel" data-i18n="btnNext">Suivant</span><svg><use href="#ic-chevron-right"/></svg></button>
   <button type="button" class="btn btn-primary btn-block" id="btnConfirm" style="display:none;">
     <span class="spinner" aria-hidden="true"></span>
     <span class="btn-text" data-i18n="btnSubmit">Envoyer mon test</span>
@@ -788,16 +786,16 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     </div>
 
     <div class="success-actions" data-print-hide>
-      <button type="button" class="btn btn-outline btn-block" id="btnPrint"><svg class="icon"><use href="#ic-print"/></svg><span data-i18n="btnPrint">Télécharger / imprimer le reçu</span></button>
+      <button type="button" class="btn btn-outline btn-block" id="btnPrint"><svg><use href="#ic-print"/></svg><span data-i18n="btnPrint">Télécharger / imprimer le reçu</span></button>
       <div class="row2">
-        <button type="button" class="btn btn-ghost" id="btnHome"><svg class="icon"><use href="#ic-home"/></svg><span data-i18n="btnHome">Retour à l'accueil</span></button>
-        <button type="button" class="btn btn-primary" id="btnWhatsapp"><svg class="icon"><use href="#ic-message"/></svg><span data-i18n="btnWhatsapp">Contacter l'école</span></button>
+        <button type="button" class="btn btn-ghost" id="btnHome"><svg><use href="#ic-home"/></svg><span data-i18n="btnHome">Retour à l'accueil</span></button>
+        <button type="button" class="btn btn-primary" id="btnWhatsapp"><svg><use href="#ic-message"/></svg><span data-i18n="btnWhatsapp">Contacter l'école</span></button>
       </div>
       <!-- Visible uniquement en ajoutant ?formateur=1 à l'URL (vue interne pour le
            personnel du centre) : imprime une feuille de correction séparée,
            jamais montrée au candidat par défaut. -->
       <button type="button" class="btn btn-outline btn-block" id="btnPrintFormateur" style="display:none;border-style:dashed;">
-        <svg class="icon"><use href="#ic-award"/></svg><span data-i18n="btnPrintFormateur">Imprimer la feuille de correction (formateur)</span>
+        <svg><use href="#ic-award"/></svg><span data-i18n="btnPrintFormateur">Imprimer la feuille de correction (formateur)</span>
       </button>
     </div>
   </div>
@@ -808,9 +806,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 ========================================================================= -->
 <footer class="site-footer">
   <div class="footer-card">
-    <div class="footer-item"><svg class="icon"><use href="#ic-globe"/></svg><div><strong data-i18n="footerSite">Site web</strong>www.lorefondation.com</div></div>
-    <div class="footer-item"><svg class="icon"><use href="#ic-phone"/></svg><div><strong>WhatsApp</strong>+509 4155-9094 / 3993-4029</div></div>
-    <div class="footer-item"><svg class="icon"><use href="#ic-map-pin"/></svg><div><strong data-i18n="footerAdresse">Adresse</strong>Vaudreuil, Carrefour Zabitan, Institution EDEN</div></div>
+    <div class="footer-item"><svg><use href="#ic-globe"/></svg><div><strong data-i18n="footerSite">Site web</strong>www.lorefondation.com</div></div>
+    <div class="footer-item"><svg><use href="#ic-phone"/></svg><div><strong>WhatsApp</strong>+509 4155-9094 / 3993-4029</div></div>
+    <div class="footer-item"><svg><use href="#ic-map-pin"/></svg><div><strong data-i18n="footerAdresse">Adresse</strong>Vaudreuil, Carrefour Zabitan, Institution EDEN</div></div>
   </div>
 </footer>
 
@@ -1152,7 +1150,7 @@ function renderQuestionCard(q, globalIndex){
       </div>
     </div>
     ${inputHtml}
-    <span class="error-msg" id="err-${q.id}"><svg class="icon"><use href="#ic-alert"/></svg>${t("errGeneric")}</span>
+    <span class="error-msg" id="err-${q.id}"><svg><use href="#ic-alert"/></svg>${t("errGeneric")}</span>
   `;
   return wrap;
 }
@@ -1493,7 +1491,7 @@ function buildRecap(){
   const { answered, total } = countAnswered();
   const container = document.getElementById("recapContainer");
 
-  let html = `<div class="recap-progress-note"><svg class="icon"><use href="#ic-check-circle"/></svg><span>${answered} ${t("recapProgress")} ${total} ${t("recapProgress2")}</span></div>`;
+  let html = `<div class="recap-progress-note"><svg><use href="#ic-check-circle"/></svg><span>${answered} ${t("recapProgress")} ${total} ${t("recapProgress2")}</span></div>`;
 
   const totalBlur = state.integrity.blurCount + state.integrity.hiddenCount;
   if(totalBlur > 0){
@@ -1502,7 +1500,7 @@ function buildRecap(){
 
   html += `
     <div class="recap-block">
-      <h4><svg class="icon"><use href="#ic-user"/></svg>${t("recapInfoTitle")}</h4>
+      <h4><svg><use href="#ic-user"/></svg>${t("recapInfoTitle")}</h4>
       <div class="recap-rows">
         <div class="recap-row"><dt>${t("recapNomComplet")}</dt><dd>${nomCompletAuto()}</dd></div>
         <div class="recap-row"><dt>${t("recapAge")}</dt><dd>${val("age")}</dd></div>
@@ -1512,7 +1510,7 @@ function buildRecap(){
     </div>`;
 
   PARTIES.forEach(partie=>{
-    html += `<div class="recap-block"><h4><svg class="icon"><use href="#ic-book"/></svg>${PARTIE_TITLES[partie.id][state.lang] || PARTIE_TITLES[partie.id].fr}</h4><div class="recap-rows">`;
+    html += `<div class="recap-block"><h4><svg><use href="#ic-book"/></svg>${PARTIE_TITLES[partie.id][state.lang] || PARTIE_TITLES[partie.id].fr}</h4><div class="recap-rows">`;
     partie.questions.forEach((q,i)=>{
       const a = answerFor(q);
       const label = qLabel(q);
