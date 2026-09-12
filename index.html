@@ -163,6 +163,17 @@ img{max-width:100%;display:block;}
 }
 .timer-badge svg{width:15px;height:15px;color:var(--cyan-400);}
 .timer-badge #timerValue{font-variant-numeric:tabular-nums;color:var(--amber-400);}
+.timer-badge.is-warning #timerValue{color:#ff8080;}
+
+.lang-toggle-row{display:flex;justify-content:flex-end;position:relative;z-index:1;margin-bottom:-4px;}
+.lang-toggle{
+  display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12.5px;font-weight:700;
+  padding:7px 13px;border-radius:99px;cursor:pointer;transition:background .18s,transform .12s;
+}
+.lang-toggle:hover{background:rgba(255,255,255,.16);}
+.lang-toggle:active{transform:scale(.96);}
+.lang-toggle svg{width:14px;height:14px;color:var(--cyan-400);}
 
 /* Progress indicator ------------------------------------------------- */
 .progress-wrap{
@@ -401,11 +412,16 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
   font-size:13px;font-weight:600;padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:16px;
 }
 .recap-progress-note svg{width:16px;height:16px;color:var(--royal-600);flex:none;}
+.integrity-note{font-size:12px;color:var(--ink-400);margin:-10px 0 16px;padding-left:2px;}
 
 /* Toast / inline banner ----------------------------------------------------*/
 .banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;margin-bottom:16px;}
 .banner svg{width:18px;height:18px;flex:none;margin-top:1px;}
 .banner-error{background:#fdeceb;color:var(--err-500);border:1px solid #f6c9c6;}
+.banner-info{background:var(--blue-100);color:var(--navy-900);border:1px solid var(--line);flex-wrap:wrap;align-items:center;}
+.banner-info .draft-banner-actions{display:flex;gap:8px;margin-left:auto;}
+.banner-info .btn{min-height:38px;padding:8px 14px;font-size:13px;}
+@media(max-width:480px){.banner-info .draft-banner-actions{width:100%;margin-left:0;margin-top:8px;}.banner-info .draft-banner-actions .btn{flex:1;}}
 
 /* =========================================================================
    4. SUCCESS SCREEN
@@ -542,24 +558,30 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
       </div>
     </div>
 
+    <div class="lang-toggle-row">
+      <button type="button" class="lang-toggle" id="btnLangToggle" aria-label="Changer la langue / Chanje lang">
+        <svg><use href="#ic-globe"/></svg><span id="langToggleLabel">Kreyòl</span>
+      </button>
+    </div>
+
     <div class="header-copy">
-      <div class="kicker"><svg><use href="#ic-bulb"/></svg> Test d'évaluation initiale — niveau débutant</div>
-      <h2>Découvrons votre niveau ensemble</h2>
-      <p class="tagline">Ce test n'est pas un piège : il nous aide simplement à mieux comprendre votre façon de réfléchir. Répondez avec vos propres mots — il n'est pas nécessaire d'avoir déjà étudié l'informatique.</p>
+      <div class="kicker"><svg><use href="#ic-bulb"/></svg> <span data-i18n="kicker">Test d'évaluation initiale — niveau débutant</span></div>
+      <h2 data-i18n="h2title">Découvrons votre niveau ensemble</h2>
+      <p class="tagline" data-i18n="tagline">Ce test n'est pas un piège : il nous aide simplement à mieux comprendre votre façon de réfléchir. Répondez avec vos propres mots — il n'est pas nécessaire d'avoir déjà étudié l'informatique.</p>
     </div>
 
     <div class="feature-row">
-      <div class="feature-chip"><span class="fi"><svg><use href="#ic-clock"/></svg></span><span>Environ 45 minutes</span></div>
-      <div class="feature-chip"><span class="fi"><svg><use href="#ic-book"/></svg></span><span>20 questions de réflexion</span></div>
-      <div class="feature-chip"><span class="fi"><svg><use href="#ic-bulb"/></svg></span><span>Aucune connaissance requise</span></div>
-      <div class="feature-chip"><span class="fi"><svg><use href="#ic-user"/></svg></span><span>Répondez dans vos propres mots</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-clock"/></svg></span><span data-i18n="chip1">Environ 45 minutes</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-book"/></svg></span><span data-i18n="chip2">20 questions de réflexion</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-bulb"/></svg></span><span data-i18n="chip3">Aucune connaissance requise</span></div>
+      <div class="feature-chip"><span class="fi"><svg><use href="#ic-user"/></svg></span><span data-i18n="chip4">Répondez dans vos propres mots</span></div>
     </div>
 
-    <div class="timer-badge"><svg><use href="#ic-clock"/></svg>Temps suggéré restant : <span id="timerValue">45:00</span></div>
+    <div class="timer-badge" id="timerBadge"><svg><use href="#ic-clock"/></svg><span data-i18n="timerLabel">Temps suggéré restant :</span> <span id="timerValue">45:00</span></div>
 
     <nav class="progress-wrap" aria-label="Progression du test">
       <div class="progress-top">
-        <span class="step-label"><span id="stepCurrent">1</span>/<span id="stepTotal">6</span> — Étape en cours</span>
+        <span class="step-label"><span id="stepCurrent">1</span>/<span id="stepTotal">6</span> <span data-i18n="stepLabelSuffix">— Étape en cours</span></span>
         <span class="step-name" id="stepName">Informations du candidat</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -585,48 +607,57 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
       <svg><use href="#ic-alert"/></svg><span id="globalErrorText">Veuillez répondre aux questions en surbrillance avant de continuer.</span>
     </div>
 
+    <div class="banner banner-info" id="draftBanner" role="status" style="display:none;">
+      <svg><use href="#ic-clock"/></svg>
+      <span id="draftBannerText"></span>
+      <div class="draft-banner-actions">
+        <button type="button" class="btn btn-ghost" id="btnDraftRestart">Recommencer</button>
+        <button type="button" class="btn btn-primary" id="btnDraftResume">Continuer</button>
+      </div>
+    </div>
+
     <!-- ============================= ÉTAPE 1 — INFORMATIONS DU CANDIDAT ============================= -->
     <section class="step-panel is-active" data-step="1" aria-labelledby="s1h">
       <div class="step-icon"><svg><use href="#ic-user"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Étape 1 sur 5</span>
-        <h3 id="s1h">Informations du candidat</h3>
-        <p class="step-desc">Quelques informations avant de commencer le test.</p>
+        <span class="step-eyebrow" data-i18n="s1eyebrow">Étape 1 sur 5</span>
+        <h3 id="s1h" data-i18n="s1title">Informations du candidat</h3>
+        <p class="step-desc" data-i18n="s1desc">Quelques informations avant de commencer le test.</p>
       </div>
 
       <div class="fee-note">
         <svg><use href="#ic-bulb"/></svg>
-        <p><strong>Consignes :</strong> ce test n'est pas destiné à vous piéger. Répondez avec vos propres mots ; si vous ne connaissez pas une réponse, essayez quand même d'expliquer ce que vous pensez. Il n'est pas nécessaire d'avoir déjà étudié l'informatique pour réussir ce test.</p>
+        <p><strong data-i18n="s1consigneTitre">Consignes :</strong> <span data-i18n="s1consigneTexte">ce test n'est pas destiné à vous piéger. Répondez avec vos propres mots ; si vous ne connaissez pas une réponse, essayez quand même d'expliquer ce que vous pensez. Il n'est pas nécessaire d'avoir déjà étudié l'informatique pour réussir ce test.</span></p>
       </div>
 
       <div class="grid cols-2">
         <div class="field">
-          <label for="prenom">Prénom <span class="req">*</span></label>
+          <label for="prenom"><span data-i18n="labelPrenom">Prénom</span> <span class="req">*</span></label>
           <input type="text" id="prenom" name="prenom" required autocomplete="given-name">
-          <span class="error-msg"><svg><use href="#ic-alert"/></svg>Le prénom est obligatoire.</span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errPrenom">Le prénom est obligatoire.</span></span>
         </div>
         <div class="field">
-          <label for="nomFamille">Nom de famille <span class="req">*</span></label>
+          <label for="nomFamille"><span data-i18n="labelNomFamille">Nom de famille</span> <span class="req">*</span></label>
           <input type="text" id="nomFamille" name="nomFamille" required autocomplete="family-name">
-          <span class="error-msg"><svg><use href="#ic-alert"/></svg>Le nom de famille est obligatoire.</span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errNomFamille">Le nom de famille est obligatoire.</span></span>
         </div>
       </div>
 
       <div class="grid cols-2" style="margin-top:16px;">
         <div class="field">
-          <label for="age">Âge <span class="req">*</span></label>
+          <label for="age"><span data-i18n="labelAge">Âge</span> <span class="req">*</span></label>
           <input type="number" id="age" name="age" min="5" max="99" step="1" required inputmode="numeric">
-          <span class="error-msg"><svg><use href="#ic-alert"/></svg>Veuillez indiquer un âge valide.</span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errAge">Veuillez indiquer un âge valide.</span></span>
         </div>
         <div class="field">
-          <label for="telephone">Téléphone <span class="req">*</span></label>
+          <label for="telephone"><span data-i18n="labelTelephone">Téléphone</span> <span class="req">*</span></label>
           <input type="tel" id="telephone" name="telephone" required placeholder="+509 00 00 0000" autocomplete="tel">
-          <span class="error-msg"><svg><use href="#ic-alert"/></svg>Numéro de téléphone invalide.</span>
+          <span class="error-msg"><svg><use href="#ic-alert"/></svg><span data-i18n="errTelephone">Numéro de téléphone invalide.</span></span>
         </div>
       </div>
 
       <div class="field" style="margin-top:16px;max-width:100%;">
-        <label for="commune">Commune / Ville <span class="hint" style="font-weight:400;">(optionnel)</span></label>
+        <label for="commune"><span data-i18n="labelCommune">Commune / Ville</span> <span class="hint" style="font-weight:400;" data-i18n="optionnel">(optionnel)</span></label>
         <input type="text" id="commune" name="commune" autocomplete="address-level2">
       </div>
 
@@ -634,14 +665,14 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
         <div class="q-head">
           <span class="q-num"><svg style="width:15px;height:15px;"><use href="#ic-smartphone"/></svg></span>
           <div>
-            <div class="q-label">Avez-vous accès à un ordinateur ou un smartphone ?<span class="q-bonus-tag">Question bonus</span></div>
-            <div class="q-hint">Cette question n'affecte pas votre note — elle nous aide simplement à mieux vous accompagner.</div>
+            <div class="q-label"><span data-i18n="bonusAppareilLabel">Avez-vous accès à un ordinateur ou un smartphone ?</span><span class="q-bonus-tag" data-i18n="bonusTag">Question bonus</span></div>
+            <div class="q-hint" data-i18n="bonusAppareilHint">Cette question n'affecte pas votre note — elle nous aide simplement à mieux vous accompagner.</div>
           </div>
         </div>
         <div class="choice-group" role="radiogroup" aria-label="Accès à un appareil">
-          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Oui, à moi"><span>Oui, à moi</span></label>
-          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Oui, dans la famille"><span>Oui, dans la famille</span></label>
-          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Non"><span>Non</span></label>
+          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Oui, à moi"><span data-i18n="accesOuiMoi">Oui, à moi</span></label>
+          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Oui, dans la famille"><span data-i18n="accesOuiFamille">Oui, dans la famille</span></label>
+          <label class="choice-pill"><input type="radio" name="accesAppareil" value="Non"><span data-i18n="accesNon">Non</span></label>
         </div>
       </div>
     </section>
@@ -650,9 +681,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     <section class="step-panel" data-step="2" aria-labelledby="s2h">
       <div class="step-icon"><svg><use href="#ic-cpu"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Étape 2 sur 5</span>
-        <h3 id="s2h">Partie 1 — Connaissances générales<span class="step-score-pill">/10</span></h3>
-        <p class="step-desc">Répondez du mieux que vous pouvez, avec vos propres mots.</p>
+        <span class="step-eyebrow" data-i18n="s2eyebrow">Étape 2 sur 5</span>
+        <h3 id="s2h"><span data-i18n="s2title">Partie 1 — Connaissances générales</span><span class="step-score-pill">/10</span></h3>
+        <p class="step-desc" data-i18n="s2desc">Répondez du mieux que vous pouvez, avec vos propres mots.</p>
       </div>
       <div id="partie1Container"></div>
     </section>
@@ -661,9 +692,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     <section class="step-panel" data-step="3" aria-labelledby="s3h">
       <div class="step-icon"><svg><use href="#ic-target"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Étape 3 sur 5</span>
-        <h3 id="s3h">Partie 2 — Logique et réflexion<span class="step-score-pill">/10</span></h3>
-        <p class="step-desc">Prenez le temps de réfléchir — il n'y a pas de mauvaise façon de raisonner.</p>
+        <span class="step-eyebrow" data-i18n="s3eyebrow">Étape 3 sur 5</span>
+        <h3 id="s3h"><span data-i18n="s3title">Partie 2 — Logique et réflexion</span><span class="step-score-pill">/10</span></h3>
+        <p class="step-desc" data-i18n="s3desc">Prenez le temps de réfléchir — il n'y a pas de mauvaise façon de raisonner.</p>
       </div>
       <div id="partie2Container"></div>
     </section>
@@ -672,9 +703,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     <section class="step-panel" data-step="4" aria-labelledby="s4h">
       <div class="step-icon"><svg><use href="#ic-briefcase"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Étape 4 sur 5</span>
-        <h3 id="s4h">Partie 3 — Situations pratiques<span class="step-score-pill">/10</span></h3>
-        <p class="step-desc">Mettez-vous dans la situation et expliquez ce que vous feriez.</p>
+        <span class="step-eyebrow" data-i18n="s4eyebrow">Étape 4 sur 5</span>
+        <h3 id="s4h"><span data-i18n="s4title">Partie 3 — Situations pratiques</span><span class="step-score-pill">/10</span></h3>
+        <p class="step-desc" data-i18n="s4desc">Mettez-vous dans la situation et expliquez ce que vous feriez.</p>
       </div>
       <div id="partie3Container"></div>
     </section>
@@ -683,9 +714,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     <section class="step-panel" data-step="5" aria-labelledby="s5h">
       <div class="step-icon"><svg><use href="#ic-award"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Étape 5 sur 5</span>
-        <h3 id="s5h">Partie 4 — Créativité et motivation<span class="step-score-pill">/10</span></h3>
-        <p class="step-desc">Il n'y a pas de bonne ou de mauvaise réponse ici — soyez vous-même.</p>
+        <span class="step-eyebrow" data-i18n="s5eyebrow">Étape 5 sur 5</span>
+        <h3 id="s5h"><span data-i18n="s5title">Partie 4 — Créativité et motivation</span><span class="step-score-pill">/10</span></h3>
+        <p class="step-desc" data-i18n="s5desc">Il n'y a pas de bonne ou de mauvaise réponse ici — soyez vous-même.</p>
       </div>
       <div id="partie4Container"></div>
 
@@ -693,11 +724,11 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
         <div class="q-head">
           <span class="q-num"><svg style="width:15px;height:15px;"><use href="#ic-message"/></svg></span>
           <div>
-            <div class="q-label">Comment avez-vous entendu parler de notre centre de formation ?<span class="q-bonus-tag">Question bonus</span></div>
-            <div class="q-hint">Cette question n'affecte pas votre note.</div>
+            <div class="q-label"><span data-i18n="bonusSourceLabel">Comment avez-vous entendu parler de notre centre de formation ?</span><span class="q-bonus-tag" data-i18n="bonusTag">Question bonus</span></div>
+            <div class="q-hint" data-i18n="bonusSourceHint">Cette question n'affecte pas votre note.</div>
           </div>
         </div>
-        <textarea id="q-bonusSource" name="bonusSource" placeholder="Ex : un(e) ami(e), les réseaux sociaux, WhatsApp, dans le quartier…"></textarea>
+        <textarea id="q-bonusSource" name="bonusSource" data-i18n-placeholder="bonusSourcePlaceholder" placeholder="Ex : un(e) ami(e), les réseaux sociaux, WhatsApp, dans le quartier…"></textarea>
       </div>
     </section>
 
@@ -705,18 +736,18 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
     <section class="step-panel" data-step="6" aria-labelledby="s6h">
       <div class="step-icon"><svg><use href="#ic-check"/></svg></div>
       <div class="step-head">
-        <span class="step-eyebrow">Dernière vérification</span>
-        <h3 id="s6h">Récapitulatif de votre test</h3>
-        <p class="step-desc">Vérifiez que tout est bien rempli avant d'envoyer votre test.</p>
+        <span class="step-eyebrow" data-i18n="s6eyebrow">Dernière vérification</span>
+        <h3 id="s6h" data-i18n="s6title">Récapitulatif de votre test</h3>
+        <p class="step-desc" data-i18n="s6desc">Vérifiez que tout est bien rempli avant d'envoyer votre test.</p>
       </div>
       <div id="recapContainer"></div>
 
       <div style="margin-top:8px;border-top:1px solid var(--line);">
         <div class="consent-row">
           <input type="checkbox" id="consentPropre" name="consentPropre">
-          <label for="consentPropre">Je confirme que ce sont mes propres réponses, faites sans aide extérieure.</label>
+          <label for="consentPropre" data-i18n="consentLabel">Je confirme que ce sont mes propres réponses, faites sans aide extérieure.</label>
         </div>
-        <span class="error-msg" id="err-consent"><svg><use href="#ic-alert"/></svg>Vous devez confirmer avant d'envoyer votre test.</span>
+        <span class="error-msg" id="err-consent"><svg><use href="#ic-alert"/></svg><span data-i18n="errConsent">Vous devez confirmer avant d'envoyer votre test.</span></span>
       </div>
     </section>
 
@@ -727,11 +758,11 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
      NAVIGATION (sticky en bas sur mobile)
 ========================================================================= -->
 <div class="form-nav">
-  <button type="button" class="btn btn-ghost" id="btnPrev"><svg><use href="#ic-chevron-left"/></svg>Précédent</button>
-  <button type="button" class="btn btn-primary btn-block" id="btnNext">Suivant<svg><use href="#ic-chevron-right"/></svg></button>
+  <button type="button" class="btn btn-ghost" id="btnPrev"><svg><use href="#ic-chevron-left"/></svg><span data-i18n="btnPrev">Précédent</span></button>
+  <button type="button" class="btn btn-primary btn-block" id="btnNext"><span id="btnNextLabel" data-i18n="btnNext">Suivant</span><svg><use href="#ic-chevron-right"/></svg></button>
   <button type="button" class="btn btn-primary btn-block" id="btnConfirm" style="display:none;">
     <span class="spinner" aria-hidden="true"></span>
-    <span class="btn-text">Envoyer mon test</span>
+    <span class="btn-text" data-i18n="btnSubmit">Envoyer mon test</span>
   </button>
 </div>
 
@@ -744,22 +775,28 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
       <svg viewBox="0 0 24 24" class="success-check-svg"><path d="M4 12.5l5 5L20 7" pathLength="1" stroke-width="2.6" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="confetti-wrap" id="confettiWrap" aria-hidden="true"></span>
     </div>
-    <h2 id="successTitle">Test envoyé avec succès !</h2>
-    <p class="sub">Vos réponses ont été transmises à notre équipe pédagogique pour correction.</p>
+    <h2 id="successTitle" data-i18n="successTitle">Test envoyé avec succès !</h2>
+    <p class="sub" data-i18n="successSub">Vos réponses ont été transmises à notre équipe pédagogique pour correction.</p>
 
     <div class="receipt">
-      <div class="r-row"><dt>N° de test</dt><dd id="rx-dossier">—</dd></div>
-      <div class="r-row"><dt>Candidat</dt><dd id="rx-nom">—</dd></div>
-      <div class="r-row"><dt>Date</dt><dd id="rx-date">—</dd></div>
-      <div class="r-row"><dt>Statut</dt><dd id="rx-statut">En attente de correction</dd></div>
+      <div class="r-row"><dt data-i18n="rxDossier">N° de test</dt><dd id="rx-dossier">—</dd></div>
+      <div class="r-row"><dt data-i18n="rxCandidat">Candidat</dt><dd id="rx-nom">—</dd></div>
+      <div class="r-row"><dt data-i18n="rxDate">Date</dt><dd id="rx-date">—</dd></div>
+      <div class="r-row"><dt data-i18n="rxStatut">Statut</dt><dd id="rx-statut" data-i18n="rxStatutValeur">En attente de correction</dd></div>
     </div>
 
     <div class="success-actions" data-print-hide>
-      <button type="button" class="btn btn-outline btn-block" id="btnPrint"><svg><use href="#ic-print"/></svg>Télécharger / imprimer le reçu</button>
+      <button type="button" class="btn btn-outline btn-block" id="btnPrint"><svg><use href="#ic-print"/></svg><span data-i18n="btnPrint">Télécharger / imprimer le reçu</span></button>
       <div class="row2">
-        <button type="button" class="btn btn-ghost" id="btnHome"><svg><use href="#ic-home"/></svg>Retour à l'accueil</button>
-        <button type="button" class="btn btn-primary" id="btnWhatsapp"><svg><use href="#ic-message"/></svg>Contacter l'école</button>
+        <button type="button" class="btn btn-ghost" id="btnHome"><svg><use href="#ic-home"/></svg><span data-i18n="btnHome">Retour à l'accueil</span></button>
+        <button type="button" class="btn btn-primary" id="btnWhatsapp"><svg><use href="#ic-message"/></svg><span data-i18n="btnWhatsapp">Contacter l'école</span></button>
       </div>
+      <!-- Visible uniquement en ajoutant ?formateur=1 à l'URL (vue interne pour le
+           personnel du centre) : imprime une feuille de correction séparée,
+           jamais montrée au candidat par défaut. -->
+      <button type="button" class="btn btn-outline btn-block" id="btnPrintFormateur" style="display:none;border-style:dashed;">
+        <svg><use href="#ic-award"/></svg><span data-i18n="btnPrintFormateur">Imprimer la feuille de correction (formateur)</span>
+      </button>
     </div>
   </div>
 </div>
@@ -769,9 +806,9 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 ========================================================================= -->
 <footer class="site-footer">
   <div class="footer-card">
-    <div class="footer-item"><svg><use href="#ic-globe"/></svg><div><strong>Site web</strong>www.lorefondation.com</div></div>
+    <div class="footer-item"><svg><use href="#ic-globe"/></svg><div><strong data-i18n="footerSite">Site web</strong>www.lorefondation.com</div></div>
     <div class="footer-item"><svg><use href="#ic-phone"/></svg><div><strong>WhatsApp</strong>+509 4155-9094 / 3993-4029</div></div>
-    <div class="footer-item"><svg><use href="#ic-map-pin"/></svg><div><strong>Adresse</strong>Vaudreuil, Carrefour Zabitan, Institution EDEN</div></div>
+    <div class="footer-item"><svg><use href="#ic-map-pin"/></svg><div><strong data-i18n="footerAdresse">Adresse</strong>Vaudreuil, Carrefour Zabitan, Institution EDEN</div></div>
   </div>
 </footer>
 
@@ -782,22 +819,24 @@ input.is-invalid,select.is-invalid,textarea.is-invalid{border-color:var(--err-50
 /* =========================================================================
    CONFIGURATION — modifiez cette section selon vos besoins
    ---------------------------------------------------------------------
-   NOTE : l'URL de la fonction Edge Supabase et la clé "anon" ci-dessous
-   sont des PLACEHOLDERS en attente de la nouvelle configuration Supabase
-   dédiée à ce test (distincte de celle du formulaire d'inscription).
-   Tant qu'elles ne sont pas renseignées, le formulaire simule
-   automatiquement l'envoi — pratique pour tester avant que le backend
-   soit prêt.
+   NOTE : ce test utilise sa PROPRE fonction Edge dédiée,
+   "submit-placement-exam" — différente de "public-registration" (celle
+   du formulaire d'inscription). Les réponses (y compris la langue
+   utilisée, le score automatique des questions objectives, et les
+   signaux d'intégrité) sont enregistrées dans la table
+   "placement_exam_submissions" avec le statut "pending_correction" —
+   l'équipe corrige chaque copie directement dans l'application
+   (section "Tès Nivo").
 ========================================================================= */
 const CONFIG = {
   schoolName: "Centre de Formation en Informatique",
-  // URL de la fonction Edge Supabase à utiliser pour CE test (à remplacer
-  // par la nouvelle configuration). Format :
+  // URL de la fonction Edge Supabase — identique à celle du formulaire
+  // d'inscription (même projet). Format :
   // https://<VOTRE-PROJET>.supabase.co/functions/v1/<nom-de-la-fonction>
-  API_URL: "YOUR_API_ENDPOINT",
-  // Clé "anon" (publique) du projet Supabase — Réglages du projet → API →
-  // "anon public". C'est une clé faite pour être publique.
-  SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
+  API_URL: "https://afvqvorexojvjpjxiabu.supabase.co/functions/v1/submit-placement-exam",
+  // Clé "anon" (publique) du projet Supabase — identique à celle du
+  // formulaire d'inscription. C'est une clé faite pour être publique.
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmdnF2b3JleG9qdmpwanhpYWJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjcwMzIsImV4cCI6MjA5OTY0MzAzMn0.8QTKR0NWUVesNTg58Sa-bpyfBqqVMCga-X8izf0qQzc",
   // Numéro WhatsApp de l'école au format international sans "+" ni espaces.
   whatsappNumber: "50941559094",
   schoolEmail: "formation@lorefondation.com",
@@ -809,64 +848,252 @@ const CONFIG = {
   suggestedDurationSeconds: 45 * 60
 };
 
+// Mode formateur (usage interne) : ajouter ?formateur=1 à l'URL révèle un
+// bouton supplémentaire sur l'écran de succès pour imprimer une feuille de
+// correction. Ce n'est PAS une sécurité réelle (visible dans le code
+// source) — seulement un raccourci pratique pour le personnel du centre.
+const isFormateurMode = new URLSearchParams(window.location.search).get("formateur") === "1";
+
 /* =========================================================================
-   BANQUE DE QUESTIONS
+   TRADUCTIONS (Français / Kreyòl) — textes fixes de l'interface
+   ---------------------------------------------------------------------
+   Chaque clé correspond à un attribut data-i18n="clé" dans le HTML (ou à
+   une utilisation directe en JavaScript). Pour changer un texte, il
+   suffit de modifier sa valeur ici — le reste s'applique automatiquement.
+========================================================================= */
+const I18N = {
+  kicker: { fr:"Test d'évaluation initiale — niveau débutant", ht:"Tès evalyasyon inisyal — nivo debitan" },
+  h2title: { fr:"Découvrons votre niveau ensemble", ht:"Ann dekouvri nivo ou ansanm" },
+  tagline: { fr:"Ce test n'est pas un piège : il nous aide simplement à mieux comprendre votre façon de réfléchir. Répondez avec vos propres mots — il n'est pas nécessaire d'avoir déjà étudié l'informatique.", ht:"Tès sa a se pa yon pyèj: li ede nou konprann fason ou reflechi. Reponn ak pwòp mo pa w — ou pa bezwen te deja etidye enfòmatik." },
+  chip1: { fr:"Environ 45 minutes", ht:"Anviwon 45 minit" },
+  chip2: { fr:"20 questions de réflexion", ht:"20 kesyon refleksyon" },
+  chip3: { fr:"Aucune connaissance requise", ht:"Pa bezwen okenn konesans" },
+  chip4: { fr:"Répondez dans vos propres mots", ht:"Reponn ak pwòp mo pa w" },
+  timerLabel: { fr:"Temps suggéré restant :", ht:"Tan sijere ki rete :" },
+  timerOver: { fr:"Temps suggéré dépassé", ht:"Tan sijere a fin pase" },
+  stepLabelSuffix: { fr:"— Étape en cours", ht:"— Etap kounye a" },
+
+  s1eyebrow: { fr:"Étape 1 sur 5", ht:"Etap 1 sou 5" },
+  s1title: { fr:"Informations du candidat", ht:"Enfòmasyon kandida a" },
+  s1desc: { fr:"Quelques informations avant de commencer le test.", ht:"Kèk enfòmasyon anvan w kòmanse tès la." },
+  s1consigneTitre: { fr:"Consignes :", ht:"Konsiy :" },
+  s1consigneTexte: { fr:"ce test n'est pas destiné à vous piéger. Répondez avec vos propres mots ; si vous ne connaissez pas une réponse, essayez quand même d'expliquer ce que vous pensez. Il n'est pas nécessaire d'avoir déjà étudié l'informatique pour réussir ce test.", ht:"tès sa a pa fèt pou pyeje w. Reponn ak pwòp mo pa w; si w pa konnen yon repons, eseye eksplike sa w panse kanmenm. Ou pa bezwen te deja etidye enfòmatik pou reyisi tès sa a." },
+  labelPrenom: { fr:"Prénom", ht:"Prenon" },
+  labelNomFamille: { fr:"Nom de famille", ht:"Non fanmi" },
+  labelAge: { fr:"Âge", ht:"Laj" },
+  labelTelephone: { fr:"Téléphone", ht:"Telefòn" },
+  labelCommune: { fr:"Commune / Ville", ht:"Komin / Vil" },
+  optionnel: { fr:"(optionnel)", ht:"(opsyonèl)" },
+  errPrenom: { fr:"Le prénom est obligatoire.", ht:"Prenon an obligatwa." },
+  errNomFamille: { fr:"Le nom de famille est obligatoire.", ht:"Non fanmi an obligatwa." },
+  errAge: { fr:"Veuillez indiquer un âge valide.", ht:"Tanpri mete yon laj ki valab." },
+  errTelephone: { fr:"Numéro de téléphone invalide.", ht:"Nimewo telefòn nan pa valab." },
+  bonusTag: { fr:"Question bonus", ht:"Kesyon bonis" },
+  bonusAppareilLabel: { fr:"Avez-vous accès à un ordinateur ou un smartphone ?", ht:"Èske w gen aksè a yon òdinatè oswa yon smartphone ?" },
+  bonusAppareilHint: { fr:"Cette question n'affecte pas votre note — elle nous aide simplement à mieux vous accompagner.", ht:"Kesyon sa a pa afekte nòt ou — li senpleman ede nou akonpaye w pi byen." },
+  accesOuiMoi: { fr:"Oui, à moi", ht:"Wi, se pa m" },
+  accesOuiFamille: { fr:"Oui, dans la famille", ht:"Wi, nan fanmi an" },
+  accesNon: { fr:"Non", ht:"Non" },
+
+  s2eyebrow: { fr:"Étape 2 sur 5", ht:"Etap 2 sou 5" },
+  s2title: { fr:"Partie 1 — Connaissances générales", ht:"Pati 1 — Konesans jeneral" },
+  s2desc: { fr:"Répondez du mieux que vous pouvez, avec vos propres mots.", ht:"Reponn pi byen ou kapab, ak pwòp mo pa w." },
+
+  s3eyebrow: { fr:"Étape 3 sur 5", ht:"Etap 3 sou 5" },
+  s3title: { fr:"Partie 2 — Logique et réflexion", ht:"Pati 2 — Lojik ak refleksyon" },
+  s3desc: { fr:"Prenez le temps de réfléchir — il n'y a pas de mauvaise façon de raisonner.", ht:"Pran tan w pou reflechi — pa gen move fason pou rezone." },
+
+  s4eyebrow: { fr:"Étape 4 sur 5", ht:"Etap 4 sou 5" },
+  s4title: { fr:"Partie 3 — Situations pratiques", ht:"Pati 3 — Sitiyasyon pratik" },
+  s4desc: { fr:"Mettez-vous dans la situation et expliquez ce que vous feriez.", ht:"Mete tèt ou nan sitiyasyon an epi eksplike sa w ta fè." },
+
+  s5eyebrow: { fr:"Étape 5 sur 5", ht:"Etap 5 sou 5" },
+  s5title: { fr:"Partie 4 — Créativité et motivation", ht:"Pati 4 — Kreyativite ak motivasyon" },
+  s5desc: { fr:"Il n'y a pas de bonne ou de mauvaise réponse ici — soyez vous-même.", ht:"Pa gen bon oswa move repons isit la — se pou w rete natirèl." },
+  bonusSourceLabel: { fr:"Comment avez-vous entendu parler de notre centre de formation ?", ht:"Kijan ou te tande pale de sant fòmasyon nou an ?" },
+  bonusSourceHint: { fr:"Cette question n'affecte pas votre note.", ht:"Kesyon sa a pa afekte nòt ou." },
+  bonusSourcePlaceholder: { fr:"Ex : un(e) ami(e), les réseaux sociaux, WhatsApp, dans le quartier…", ht:"Egz: yon zanmi, rezo sosyal, WhatsApp, nan katye a…" },
+
+  s6eyebrow: { fr:"Dernière vérification", ht:"Dènye verifikasyon" },
+  s6title: { fr:"Récapitulatif de votre test", ht:"Rekapitilasyon tès ou a" },
+  s6desc: { fr:"Vérifiez que tout est bien rempli avant d'envoyer votre test.", ht:"Verifye tout bagay byen ranpli anvan w voye tès ou a." },
+  consentLabel: { fr:"Je confirme que ce sont mes propres réponses, faites sans aide extérieure.", ht:"Mwen konfime se pwòp repons pa m yo, san okenn èd deyò." },
+  errConsent: { fr:"Vous devez confirmer avant d'envoyer votre test.", ht:"Ou dwe konfime anvan w voye tès ou a." },
+
+  errGeneric: { fr:"Veuillez répondre à cette question avant de continuer.", ht:"Tanpri reponn kesyon sa a anvan w kontinye." },
+  globalErrorDefault: { fr:"Veuillez répondre aux questions en surbrillance avant de continuer.", ht:"Tanpri reponn kesyon ki make an wouj yo anvan w kontinye." },
+  errNetwork: { fr:"Impossible de joindre le serveur. Vérifiez votre connexion internet, puis appuyez de nouveau sur « Envoyer mon test ». Si le problème persiste, contactez l'école directement.", ht:"Nou pa ka jwenn sèvè a. Tcheke koneksyon entènèt ou, epi peze « Voye tès mwen an » ankò. Si pwoblèm nan kontinye, kontakte lekòl la dirèkteman." },
+  errServerPrefix: { fr:"Une erreur est survenue lors de l'envoi. Veuillez réessayer. (", ht:"Gen yon erè ki pase pandan l ap voye. Tanpri eseye ankò. (" },
+
+  btnPrev: { fr:"Précédent", ht:"Anvan" },
+  btnNext: { fr:"Suivant", ht:"Swivan" },
+  btnCheck: { fr:"Vérifier mes réponses", ht:"Verifye repons mwen yo" },
+  btnSubmit: { fr:"Envoyer mon test", ht:"Voye tès mwen an" },
+  recapLabel: { fr:"Récapitulatif", ht:"Rekapitilasyon" },
+
+  recapInfoTitle: { fr:"Informations du candidat", ht:"Enfòmasyon kandida a" },
+  recapNomComplet: { fr:"Nom complet", ht:"Non konplè" },
+  recapAge: { fr:"Âge", ht:"Laj" },
+  recapTelephone: { fr:"Téléphone", ht:"Telefòn" },
+  recapCommune: { fr:"Commune", ht:"Komin" },
+  recapProgress: { fr:"question(s) sur", ht:"kesyon sou" },
+  recapProgress2: { fr:"répondue(s)", ht:"reponn" },
+  integrityNote: { fr:"Info : cette page a détecté {n} changement(s) de fenêtre pendant le test.", ht:"Enfo: paj sa a detekte {n} chanjman fenèt pandan tès la." },
+
+  successTitle: { fr:"Test envoyé avec succès !", ht:"Tès la voye ak siksè !" },
+  successSub: { fr:"Vos réponses ont été transmises à notre équipe pédagogique pour correction.", ht:"Repons ou yo voye bay ekip pedagojik nou an pou korije." },
+  rxDossier: { fr:"N° de test", ht:"Nimewo tès" },
+  rxCandidat: { fr:"Candidat", ht:"Kandida" },
+  rxDate: { fr:"Date", ht:"Dat" },
+  rxStatut: { fr:"Statut", ht:"Estati" },
+  rxStatutValeur: { fr:"En attente de correction", ht:"An atant koreksyon" },
+  btnPrint: { fr:"Télécharger / imprimer le reçu", ht:"Telechaje / enprime resi a" },
+  btnHome: { fr:"Retour à l'accueil", ht:"Retounen" },
+  btnWhatsapp: { fr:"Contacter l'école", ht:"Kontakte lekòl la" },
+  btnPrintFormateur: { fr:"Imprimer la feuille de correction (formateur)", ht:"Enprime fèy koreksyon (fòmatè)" },
+  whatsappMsg: { fr:"Bonjour, je viens de compléter le test d'évaluation (n° {dossier}) et j'aimerais avoir plus d'informations.", ht:"Bonjou, mwen fèk fini tès evalyasyon an (n° {dossier}) e mwen ta renmen gen plis enfòmasyon." },
+
+  footerSite: { fr:"Site web", ht:"Sit wèb" },
+  footerAdresse: { fr:"Adresse", ht:"Adrès" },
+
+  draftBannerText: { fr:"Vous avez un test non terminé, commencé le {date}.", ht:"Ou gen yon tès ki poko fini, ou te kòmanse l {date}." },
+  draftRestart: { fr:"Recommencer", ht:"Rekòmanse" },
+  draftResume: { fr:"Continuer", ht:"Kontinye" }
+};
+
+function t(key){ return (I18N[key] && I18N[key][state.lang]) || (I18N[key] && I18N[key].fr) || key; }
+
+/* =========================================================================
+   BANQUE DE QUESTIONS (bilingue Français / Kreyòl)
    ---------------------------------------------------------------------
    Chaque partie reprend les 5 questions officielles de la grille
    d'évaluation ("Test d'évaluation initiale — Informatique"). Le champ
    `type` détermine le type de réponse : "text" (réponse libre en
    plusieurs mots), "short" (réponse courte / un chiffre) ou "choice"
-   (choix parmi des options). Pour ajouter, modifier ou retirer une
-   question, il suffit d'éditer ce tableau — le reste du formulaire se
-   met à jour automatiquement.
+   (choix parmi des options). Chaque question porte son texte dans les
+   deux langues (fr / ht) ; la valeur enregistrée pour un choix reste
+   toujours en français (value), seul l'affichage change selon la langue
+   choisie — ce qui garde des données cohérentes côté serveur quelle que
+   soit la langue utilisée par le candidat. Pour ajouter, modifier ou
+   retirer une question, il suffit d'éditer ce tableau.
+
+   `autoScore` (optionnel) : fonction qui reçoit la réponse texte et
+   renvoie true/false. Utilisée uniquement pour une indication interne
+   (feuille de correction du formateur) — jamais montrée au candidat, et
+   ne remplace jamais la correction humaine des questions ouvertes.
 ========================================================================= */
+function numbersIn(str){
+  const merged = (str||"").replace(/(\d)[\s,](?=\d{3}(\D|$))/g, "$1$2");
+  return (merged.match(/\d+/g) || []).map(Number);
+}
+
 const PARTIES = [
   {
     id: "partie1", container: "partie1Container", startIndex: 1,
     questions: [
-      { id:"q1", type:"text", label:"Pour vous, qu'est-ce que l'informatique ? Expliquez avec vos propres mots." },
-      { id:"q2", type:"text", label:"Citez trois (3) appareils ou équipements informatiques que vous connaissez.", hint:"Séparez-les par une virgule.", placeholder:"Ex : ordinateur, imprimante, tablette…" },
-      { id:"q3", type:"text", label:"À quoi sert principalement un ordinateur selon vous ?" },
-      { id:"q4", type:"choice", label:"Parmi ces éléments, lequel sert principalement à saisir du texte ?", options:["Écran","Clavier","Imprimante","Haut-parleur"] },
-      { id:"q5", type:"choice", label:"Avez-vous déjà utilisé un ordinateur ?", options:["Oui, régulièrement","Oui, parfois","Très peu","Jamais"] }
+      { id:"q1", type:"text",
+        fr:{ label:"Pour vous, qu'est-ce que l'informatique ? Expliquez avec vos propres mots." },
+        ht:{ label:"Pou ou, kisa enfòmatik ye ? Eksplike ak pwòp mo pa w." } },
+      { id:"q2", type:"text",
+        fr:{ label:"Citez trois (3) appareils ou équipements informatiques que vous connaissez.", hint:"Écrivez-les l'un après l'autre, comme dans l'exemple.", placeholder:"Ex : ordinateur, imprimante, tablette…" },
+        ht:{ label:"Site twa (3) aparèy oswa ekipman enfòmatik ou konnen.", hint:"Ekri yo yonn apre lòt, tankou nan egzanp lan.", placeholder:"Egz: òdinatè, enprimant, tablèt…" } },
+      { id:"q3", type:"text",
+        fr:{ label:"À quoi sert principalement un ordinateur selon vous ?" },
+        ht:{ label:"Dapre ou, ak kisa yon òdinatè sèvi prensipalman ?" } },
+      { id:"q4", type:"choice",
+        options:[
+          { value:"Écran", fr:"Écran", ht:"Ekran" },
+          { value:"Clavier", fr:"Clavier", ht:"Klavye" },
+          { value:"Imprimante", fr:"Imprimante", ht:"Enprimant" },
+          { value:"Haut-parleur", fr:"Haut-parleur", ht:"Opalè" }
+        ],
+        fr:{ label:"Parmi ces éléments, lequel sert principalement à saisir du texte ?" },
+        ht:{ label:"Pami eleman sa yo, kilès ki sèvi prensipalman pou ekri tèks ?" },
+        autoScore: a => a === "Clavier" },
+      { id:"q5", type:"choice",
+        options:[
+          { value:"Oui, régulièrement", fr:"Oui, régulièrement", ht:"Wi, souvan" },
+          { value:"Oui, parfois", fr:"Oui, parfois", ht:"Wi, pafwa" },
+          { value:"Très peu", fr:"Très peu", ht:"Trè piti" },
+          { value:"Jamais", fr:"Jamais", ht:"Janm" }
+        ],
+        fr:{ label:"Avez-vous déjà utilisé un ordinateur ?" },
+        ht:{ label:"Èske ou te deja itilize yon òdinatè ?" } }
     ]
   },
   {
     id: "partie2", container: "partie2Container", startIndex: 6,
     questions: [
-      { id:"q6", type:"short", label:"Complétez la suite logique : 2 – 4 – 6 – 8 – ___ – ___", placeholder:"Vos deux prochains chiffres" },
-      { id:"q7", type:"short", label:"Si 1 ordinateur coûte 4 000 G et 2 ordinateurs coûtent 8 000 G, combien coûteraient 5 ordinateurs au même prix ?", hint:"Répondez en gourdes (G).", placeholder:"Ex : 20 000" },
-      { id:"q8", type:"text", label:"Un fichier est enregistré sur l'ordinateur, mais vous ne savez plus où il se trouve. Que feriez-vous ? Expliquez votre méthode." },
-      { id:"q9", type:"text", label:"Vous devez apprendre à utiliser un nouveau logiciel que vous ne connaissez absolument pas. Que faites-vous en premier ?" },
-      { id:"q10", type:"text", label:"Un ordinateur ne s'allume pas. Donnez au moins deux choses que vous vérifieriez avant de demander de l'aide." }
+      { id:"q6", type:"short",
+        fr:{ label:"Complétez la suite logique : 2 – 4 – 6 – 8 – ___ – ___", placeholder:"Vos deux prochains chiffres" },
+        ht:{ label:"Konplete sit lojik la : 2 – 4 – 6 – 8 – ___ – ___", placeholder:"De pwochen chif ou yo" },
+        autoScore: a => { const n = numbersIn(a); return n.includes(10) && n.includes(12); } },
+      { id:"q7", type:"short",
+        fr:{ label:"Si 1 ordinateur coûte 4 000 G et 2 ordinateurs coûtent 8 000 G, combien coûteraient 5 ordinateurs au même prix ?", hint:"Répondez en gourdes (G).", placeholder:"Ex : 20 000" },
+        ht:{ label:"Si 1 òdinatè koute 4 000 G e 2 òdinatè koute 8 000 G, konbyen 5 òdinatè ta koute nan menm pri a ?", hint:"Reponn an goud (G).", placeholder:"Egz: 20 000" },
+        autoScore: a => numbersIn(a).includes(20000) },
+      { id:"q8", type:"text",
+        fr:{ label:"Un fichier est enregistré sur l'ordinateur, mais vous ne savez plus où il se trouve. Que feriez-vous ? Expliquez votre méthode." },
+        ht:{ label:"Yo anrejistre yon fichye sou òdinatè a, men ou pa konn kote li ye ankò. Kisa ou ta fè ? Eksplike metòd ou." } },
+      { id:"q9", type:"text",
+        fr:{ label:"Vous devez apprendre à utiliser un nouveau logiciel que vous ne connaissez absolument pas. Que faites-vous en premier ?" },
+        ht:{ label:"Ou dwe aprann itilize yon nouvo lojisyèl ou pa konnen ditou. Kisa ou fè an premye ?" } },
+      { id:"q10", type:"text",
+        fr:{ label:"Un ordinateur ne s'allume pas. Donnez au moins deux choses que vous vérifieriez avant de demander de l'aide." },
+        ht:{ label:"Yon òdinatè pa vle limen. Bay omwen de bagay ou ta verifye anvan w mande èd." } }
     ]
   },
   {
     id: "partie3", container: "partie3Container", startIndex: 11,
     questions: [
-      { id:"q11", type:"text", label:"Vous voulez envoyer une photo à quelqu'un qui se trouve dans une autre ville. Quel moyen informatique pourriez-vous utiliser ?" },
-      { id:"q12", type:"text", label:"Vous avez écrit un document important sur l'ordinateur. Que pourriez-vous faire pour éviter de le perdre ?" },
-      { id:"q13", type:"text", label:"Vous recevez un message qui vous demande votre mot de passe. Que faites-vous ? Pourquoi ?" },
-      { id:"q14", type:"text", label:"Vous devez créer une affiche pour annoncer une activité de votre école. Quels éléments importants y mettriez-vous ?" },
-      { id:"q15", type:"text", label:"Selon vous, pourquoi est-il important pour un jeune d'apprendre l'informatique aujourd'hui ?" }
+      { id:"q11", type:"text",
+        fr:{ label:"Vous voulez envoyer une photo à quelqu'un qui se trouve dans une autre ville. Quel moyen informatique pourriez-vous utiliser ?" },
+        ht:{ label:"Ou vle voye yon foto bay yon moun ki nan yon lòt vil. Ki mwayen enfòmatik ou ta ka itilize ?" } },
+      { id:"q12", type:"text",
+        fr:{ label:"Vous avez écrit un document important sur l'ordinateur. Que pourriez-vous faire pour éviter de le perdre ?" },
+        ht:{ label:"Ou ekri yon dokiman enpòtan sou òdinatè a. Kisa ou ta ka fè pou evite pèdi l ?" } },
+      { id:"q13", type:"text",
+        fr:{ label:"Vous recevez un message qui vous demande votre mot de passe. Que faites-vous ? Pourquoi ?" },
+        ht:{ label:"Ou resevwa yon mesaj ki mande modpas ou. Kisa ou fè ? Poukisa ?" } },
+      { id:"q14", type:"text",
+        fr:{ label:"Vous devez créer une affiche pour annoncer une activité de votre école. Quels éléments importants y mettriez-vous ?" },
+        ht:{ label:"Ou dwe kreye yon afich pou anonse yon aktivite lekòl ou. Ki eleman enpòtan ou ta mete ladan l ?" } },
+      { id:"q15", type:"text",
+        fr:{ label:"Selon vous, pourquoi est-il important pour un jeune d'apprendre l'informatique aujourd'hui ?" },
+        ht:{ label:"Dapre ou, poukisa li enpòtan pou yon jèn aprann enfòmatik jodi a ?" } }
     ]
   },
   {
     id: "partie4", container: "partie4Container", startIndex: 16,
     questions: [
-      { id:"q16", type:"text", label:"Imaginez que vous devez créer une application pour aider les élèves de votre école. Quelle serait son utilité ?" },
-      { id:"q17", type:"text", label:"Si vous pouviez apprendre une seule chose en informatique cette année, qu'aimeriez-vous apprendre ? Pourquoi ?" },
-      { id:"q18", type:"text", label:"Qu'est-ce qui vous motive à apprendre l'informatique ?" },
-      { id:"q19", type:"text", label:"Selon vous, quelle qualité est la plus importante pour devenir un(e) bon(ne) informaticien(ne) ?" },
-      { id:"q20", type:"text", label:"En une phrase, dites-nous ce que vous aimeriez être capable de faire après votre formation." }
+      { id:"q16", type:"text",
+        fr:{ label:"Imaginez que vous devez créer une application pour aider les élèves de votre école. Quelle serait son utilité ?" },
+        ht:{ label:"Imajine ou dwe kreye yon aplikasyon pou ede elèv lekòl ou. Ki itilite li ta genyen ?" } },
+      { id:"q17", type:"text",
+        fr:{ label:"Si vous pouviez apprendre une seule chose en informatique cette année, qu'aimeriez-vous apprendre ? Pourquoi ?" },
+        ht:{ label:"Si ou te ka aprann yon sèl bagay nan enfòmatik ane sa a, kisa ou ta renmen aprann ? Poukisa ?" } },
+      { id:"q18", type:"text",
+        fr:{ label:"Qu'est-ce qui vous motive à apprendre l'informatique ?" },
+        ht:{ label:"Kisa ki motive ou aprann enfòmatik ?" } },
+      { id:"q19", type:"text",
+        fr:{ label:"Selon vous, quelle qualité est la plus importante pour devenir un(e) bon(ne) informaticien(ne) ?" },
+        ht:{ label:"Dapre ou, ki kalite ki pi enpòtan pou vin yon bon enfòmatisyen ?" } },
+      { id:"q20", type:"text",
+        fr:{ label:"En une phrase, dites-nous ce que vous aimeriez être capable de faire après votre formation." },
+        ht:{ label:"Nan yon sèl fraz, di nou sa ou ta renmen kapab fè apre fòmasyon w." } }
     ]
   }
 ];
 
 const PARTIE_TITLES = {
-  partie1:"Partie 1 — Connaissances générales", partie2:"Partie 2 — Logique et réflexion",
-  partie3:"Partie 3 — Situations pratiques", partie4:"Partie 4 — Créativité et motivation"
+  partie1: { fr:"Partie 1 — Connaissances générales", ht:"Pati 1 — Konesans jeneral" },
+  partie2: { fr:"Partie 2 — Logique et réflexion", ht:"Pati 2 — Lojik ak refleksyon" },
+  partie3: { fr:"Partie 3 — Situations pratiques", ht:"Pati 3 — Sitiyasyon pratik" },
+  partie4: { fr:"Partie 4 — Créativité et motivation", ht:"Pati 4 — Kreyativite ak motivasyon" }
 };
+
+function qText(q){ return q[state.lang] || q.fr; }
+function qLabel(q){ return qText(q).label; }
 
 /* =========================================================================
    ÉTAT DE L'APPLICATION
@@ -874,13 +1101,17 @@ const PARTIE_TITLES = {
 const state = {
   step: 1,
   totalSteps: 5, // + étape 6 = récapitulatif
-  startedAt: new Date().toISOString()
+  startedAt: new Date().toISOString(),
+  lang: "fr",
+  integrity: { blurCount:0, hiddenCount:0 }
 };
 
 const stepNames = {
-  1:"Informations du candidat", 2:"Partie 1 — Connaissances générales",
-  3:"Partie 2 — Logique et réflexion", 4:"Partie 3 — Situations pratiques",
-  5:"Partie 4 — Créativité et motivation"
+  1:{ fr:"Informations du candidat", ht:"Enfòmasyon kandida a" },
+  2:{ fr:"Partie 1 — Connaissances générales", ht:"Pati 1 — Konesans jeneral" },
+  3:{ fr:"Partie 2 — Logique et réflexion", ht:"Pati 2 — Lojik ak refleksyon" },
+  4:{ fr:"Partie 3 — Situations pratiques", ht:"Pati 3 — Sitiyasyon pratik" },
+  5:{ fr:"Partie 4 — Créativité et motivation", ht:"Pati 4 — Kreyativite ak motivasyon" }
 };
 
 const form = document.getElementById("examForm");
@@ -889,42 +1120,51 @@ document.getElementById("stepTotal").textContent = state.totalSteps + 1;
 
 /* =========================================================================
    GÉNÉRATION DES QUESTIONS (à partir de la banque PARTIES ci-dessus)
+   ---------------------------------------------------------------------
+   renderAllQuestions() (re)construit entièrement les questions dans la
+   langue courante. Elle est appelée au chargement, puis à chaque
+   changement de langue (en préservant les réponses déjà saisies).
 ========================================================================= */
 function renderQuestionCard(q, globalIndex){
   const wrap = document.createElement("div");
   wrap.className = "question-card";
+  const qt = qText(q);
 
   let inputHtml = "";
   if(q.type === "choice"){
-    inputHtml = `<div class="choice-group" role="radiogroup" aria-label="${q.label}">` +
-      q.options.map((opt,i)=>`<label class="choice-pill"><input type="radio" name="${q.id}" value="${opt}" required><span>${opt}</span></label>`).join("") +
+    inputHtml = `<div class="choice-group" role="radiogroup" aria-label="${qt.label}">` +
+      q.options.map(opt=>`<label class="choice-pill"><input type="radio" name="${q.id}" value="${opt.value}" required><span>${opt[state.lang] || opt.fr}</span></label>`).join("") +
       `</div>`;
   } else if(q.type === "short"){
-    inputHtml = `<input type="text" id="q-${q.id}" name="${q.id}" required placeholder="${q.placeholder||''}">`;
+    inputHtml = `<input type="text" id="q-${q.id}" name="${q.id}" required placeholder="${qt.placeholder||''}">`;
   } else {
-    inputHtml = `<textarea id="q-${q.id}" name="${q.id}" required placeholder="${q.placeholder||'Votre réponse…'}"></textarea>`;
+    inputHtml = `<textarea id="q-${q.id}" name="${q.id}" required placeholder="${qt.placeholder||(state.lang==='ht'?'Repons ou…':'Votre réponse…')}"></textarea>`;
   }
 
   wrap.innerHTML = `
     <div class="q-head">
       <span class="q-num">${globalIndex}</span>
       <div>
-        <div class="q-label">${q.label}</div>
-        ${q.hint ? `<div class="q-hint">${q.hint}</div>` : ""}
+        <div class="q-label">${qt.label}</div>
+        ${qt.hint ? `<div class="q-hint">${qt.hint}</div>` : ""}
       </div>
     </div>
     ${inputHtml}
-    <span class="error-msg" id="err-${q.id}"><svg><use href="#ic-alert"/></svg>Veuillez répondre à cette question avant de continuer.</span>
+    <span class="error-msg" id="err-${q.id}"><svg><use href="#ic-alert"/></svg>${t("errGeneric")}</span>
   `;
   return wrap;
 }
 
-PARTIES.forEach(partie=>{
-  const container = document.getElementById(partie.container);
-  partie.questions.forEach((q, i)=>{
-    container.appendChild(renderQuestionCard(q, partie.startIndex + i));
+function renderAllQuestions(){
+  PARTIES.forEach(partie=>{
+    const container = document.getElementById(partie.container);
+    container.innerHTML = "";
+    partie.questions.forEach((q, i)=>{
+      container.appendChild(renderQuestionCard(q, partie.startIndex + i));
+    });
   });
-});
+}
+renderAllQuestions();
 
 // Une réponse valide retire immédiatement le message d'erreur associé,
 // pour un retour visuel immédiat pendant la saisie.
@@ -943,27 +1183,185 @@ form.addEventListener("change", e=>{
 });
 
 /* =========================================================================
+   OTOSOVGAD (brouillon local) — pou pa pèdi repons yo
+   ---------------------------------------------------------------------
+   Chaque réponse est sauvegardée automatiquement dans le navigateur
+   (localStorage) au fur et à mesure — si le candidat ferme la page par
+   accident ou perd sa connexion, il peut reprendre exactement là où il
+   s'était arrêté. Rien n'est envoyé où que ce soit tant que le test n'est
+   pas soumis : cette sauvegarde reste strictement locale à l'appareil.
+========================================================================= */
+const DRAFT_KEY = "loreExamDraft_v1";
+
+function serializeForm(){
+  const data = {};
+  Array.from(form.elements).forEach(el=>{
+    const key = el.name || el.id;
+    if(!key || key === "website") return;
+    if(el.type === "radio"){
+      if(el.checked) data[key] = el.value;
+    } else if(el.type === "checkbox"){
+      data[key] = el.checked;
+    } else if(el.tagName === "TEXTAREA" || ["text","tel","number","email"].includes(el.type)){
+      data[key] = el.value;
+    }
+  });
+  return data;
+}
+
+function applyFormData(data){
+  if(!data) return;
+  Array.from(form.elements).forEach(el=>{
+    const key = el.name || el.id;
+    if(!key || !(key in data)) return;
+    if(el.type === "radio"){
+      el.checked = (el.value === data[key]);
+    } else if(el.type === "checkbox"){
+      el.checked = !!data[key];
+    } else if(el.tagName === "TEXTAREA" || ["text","tel","number","email"].includes(el.type)){
+      el.value = data[key];
+    }
+  });
+}
+
+function saveDraft(){
+  try{
+    const draft = {
+      savedAt: new Date().toISOString(),
+      step: state.step,
+      lang: state.lang,
+      startedAt: state.startedAt,
+      integrity: state.integrity,
+      fields: serializeForm()
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }catch(e){ /* stockage indisponible (navigation privée, quota, etc.) — on ignore silencieusement */ }
+}
+
+function loadDraft(){
+  try{
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+
+function clearDraft(){
+  try{ localStorage.removeItem(DRAFT_KEY); }catch(e){ /* ignore */ }
+}
+
+let saveDraftTimeout = null;
+function scheduleSaveDraft(){
+  clearTimeout(saveDraftTimeout);
+  saveDraftTimeout = setTimeout(saveDraft, 500);
+}
+form.addEventListener("input", scheduleSaveDraft);
+form.addEventListener("change", scheduleSaveDraft);
+
+function draftHasAnyAnswer(fields){
+  return Object.values(fields||{}).some(v => v !== "" && v !== false && v != null);
+}
+
+function showDraftBanner(draft){
+  const banner = document.getElementById("draftBanner");
+  const dateStr = new Date(draft.savedAt || draft.startedAt || Date.now()).toLocaleString(state.lang === "ht" ? "fr-FR" : "fr-FR", {dateStyle:"medium", timeStyle:"short"});
+  document.getElementById("draftBannerText").textContent = t("draftBannerText").replace("{date}", dateStr);
+  banner.style.display = "flex";
+}
+
+document.getElementById("btnDraftResume").addEventListener("click", ()=>{
+  const draft = loadDraft();
+  if(draft){
+    if(draft.lang && draft.lang !== state.lang){ applyLanguage(draft.lang); }
+    applyFormData(draft.fields);
+    state.step = draft.step || 1;
+    state.startedAt = draft.startedAt || state.startedAt;
+    state.integrity = draft.integrity || state.integrity;
+    renderStep();
+  }
+  document.getElementById("draftBanner").style.display = "none";
+});
+document.getElementById("btnDraftRestart").addEventListener("click", ()=>{
+  clearDraft();
+  document.getElementById("draftBanner").style.display = "none";
+});
+
+/* =========================================================================
+   DETEKSYON LEJÈ SI KANDIDA A KITE PAJ LA (entegrite)
+   ---------------------------------------------------------------------
+   Purement informatif et transparent : on compte simplement combien de
+   fois la fenêtre/l'onglet a perdu le focus pendant le test. Cette
+   information est jointe au dossier envoyé au centre — elle n'accuse
+   jamais et ne bloque jamais le candidat.
+========================================================================= */
+window.addEventListener("blur", ()=>{ state.integrity.blurCount++; });
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden) state.integrity.hiddenCount++;
+});
+
+/* =========================================================================
    MINUTERIE INDICATIVE (durée suggérée du test)
    ---------------------------------------------------------------------
    Purement informative : elle décompte le temps suggéré (45 minutes)
    sans jamais bloquer, soumettre ou réinitialiser le formulaire. Une fois
    le temps écoulé, un message discret invite simplement à conclure.
 ========================================================================= */
+let timerRemaining = CONFIG.suggestedDurationSeconds;
 (function startTimer(){
-  let remaining = CONFIG.suggestedDurationSeconds;
   const el = document.getElementById("timerValue");
+  const badge = document.getElementById("timerBadge");
   function tick(){
-    if(remaining <= 0){
-      el.textContent = "Temps suggéré dépassé";
+    if(timerRemaining <= 0){
+      el.textContent = t("timerOver");
       return;
     }
-    const m = Math.floor(remaining/60), s = remaining%60;
+    if(timerRemaining <= 300) badge.classList.add("is-warning");
+    const m = Math.floor(timerRemaining/60), s = timerRemaining%60;
     el.textContent = String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
-    remaining--;
+    timerRemaining--;
   }
   tick();
   setInterval(tick, 1000);
 })();
+
+/* =========================================================================
+   TRADUCTION DE L'INTERFACE (bouton FR / Kreyòl)
+========================================================================= */
+function updateNextButtonLabel(){
+  document.getElementById("btnNextLabel").textContent = state.step === state.totalSteps ? t("btnCheck") : t("btnNext");
+}
+
+function applyLanguage(lang){
+  // Préserve les réponses déjà saisies pendant que les questions sont
+  // reconstruites dans la nouvelle langue.
+  const savedAnswers = serializeForm();
+  state.lang = lang;
+
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    if(I18N[key]) el.textContent = I18N[key][lang] || I18N[key].fr;
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    const key = el.getAttribute("data-i18n-placeholder");
+    if(I18N[key]) el.placeholder = I18N[key][lang] || I18N[key].fr;
+  });
+
+  document.documentElement.setAttribute("lang", lang === "ht" ? "ht" : "fr");
+  document.getElementById("langToggleLabel").textContent = lang === "fr" ? "Kreyòl" : "Français";
+
+  renderAllQuestions();
+  applyFormData(savedAnswers);
+  updateNextButtonLabel();
+
+  const isRecap = state.step === 6;
+  document.getElementById("stepName").textContent = isRecap ? t("recapLabel") : (stepNames[state.step][lang] || stepNames[state.step].fr);
+  if(isRecap) buildRecap();
+
+  scheduleSaveDraft();
+}
+
+document.getElementById("btnLangToggle").addEventListener("click", ()=>{
+  applyLanguage(state.lang === "fr" ? "ht" : "fr");
+});
 
 /* =========================================================================
    VALIDATION
@@ -1009,6 +1407,7 @@ function validateStep(step){
   }
 
   const globalError = document.getElementById("globalError");
+  if(!valid) document.getElementById("globalErrorText").textContent = t("globalErrorDefault");
   globalError.style.display = valid ? "none" : "flex";
   return valid;
 }
@@ -1033,16 +1432,14 @@ function renderStep(){
   document.getElementById("btnPrev").style.visibility = state.step === 1 ? "hidden" : "visible";
   document.getElementById("btnNext").style.display = isRecap ? "none" : "flex";
   document.getElementById("btnConfirm").style.display = isRecap ? "flex" : "none";
-  document.getElementById("btnNext").innerHTML = state.step === state.totalSteps
-    ? `Vérifier mes réponses <svg><use href="#ic-chevron-right"/></svg>`
-    : `Suivant <svg><use href="#ic-chevron-right"/></svg>`;
+  updateNextButtonLabel();
 
   if(!isRecap){
     document.getElementById("stepCurrent").textContent = state.step;
-    document.getElementById("stepName").textContent = stepNames[state.step];
+    document.getElementById("stepName").textContent = stepNames[state.step][state.lang] || stepNames[state.step].fr;
     document.getElementById("progressFill").style.width = (state.step/(state.totalSteps+1)*100)+"%";
   } else {
-    document.getElementById("stepName").textContent = "Récapitulatif";
+    document.getElementById("stepName").textContent = t("recapLabel");
     document.getElementById("progressFill").style.width = "100%";
     buildRecap();
   }
@@ -1061,10 +1458,12 @@ document.getElementById("btnNext").addEventListener("click", ()=>{
   if(!validateStep(state.step)) return;
   state.step = Math.min(state.step+1, RECAP_STEP);
   renderStep();
+  scheduleSaveDraft();
 });
 document.getElementById("btnPrev").addEventListener("click", ()=>{
   state.step = Math.max(state.step-1, 1);
   renderStep();
+  scheduleSaveDraft();
 });
 
 /* =========================================================================
@@ -1092,30 +1491,58 @@ function buildRecap(){
   const { answered, total } = countAnswered();
   const container = document.getElementById("recapContainer");
 
-  let html = `<div class="recap-progress-note"><svg><use href="#ic-check-circle"/></svg><span>${answered} question(s) sur ${total} répondue(s)</span></div>`;
+  let html = `<div class="recap-progress-note"><svg><use href="#ic-check-circle"/></svg><span>${answered} ${t("recapProgress")} ${total} ${t("recapProgress2")}</span></div>`;
+
+  const totalBlur = state.integrity.blurCount + state.integrity.hiddenCount;
+  if(totalBlur > 0){
+    html += `<div class="integrity-note">${t("integrityNote").replace("{n}", totalBlur)}</div>`;
+  }
 
   html += `
     <div class="recap-block">
-      <h4><svg><use href="#ic-user"/></svg>Informations du candidat</h4>
+      <h4><svg><use href="#ic-user"/></svg>${t("recapInfoTitle")}</h4>
       <div class="recap-rows">
-        <div class="recap-row"><dt>Nom complet</dt><dd>${nomCompletAuto()}</dd></div>
-        <div class="recap-row"><dt>Âge</dt><dd>${val("age")}</dd></div>
-        <div class="recap-row"><dt>Téléphone</dt><dd>${val("telephone")}</dd></div>
-        <div class="recap-row"><dt>Commune</dt><dd>${valOrEmpty("commune") || "—"}</dd></div>
+        <div class="recap-row"><dt>${t("recapNomComplet")}</dt><dd>${nomCompletAuto()}</dd></div>
+        <div class="recap-row"><dt>${t("recapAge")}</dt><dd>${val("age")}</dd></div>
+        <div class="recap-row"><dt>${t("recapTelephone")}</dt><dd>${val("telephone")}</dd></div>
+        <div class="recap-row"><dt>${t("recapCommune")}</dt><dd>${valOrEmpty("commune") || "—"}</dd></div>
       </div>
     </div>`;
 
   PARTIES.forEach(partie=>{
-    html += `<div class="recap-block"><h4><svg><use href="#ic-book"/></svg>${PARTIE_TITLES[partie.id]}</h4><div class="recap-rows">`;
+    html += `<div class="recap-block"><h4><svg><use href="#ic-book"/></svg>${PARTIE_TITLES[partie.id][state.lang] || PARTIE_TITLES[partie.id].fr}</h4><div class="recap-rows">`;
     partie.questions.forEach((q,i)=>{
       const a = answerFor(q);
-      const shortLabel = q.label.length > 70 ? q.label.slice(0,70)+"…" : q.label;
+      const label = qLabel(q);
+      const shortLabel = label.length > 70 ? label.slice(0,70)+"…" : label;
       html += `<div class="recap-row"><dt>Q${partie.startIndex+i}. ${shortLabel}</dt><dd class="dd-answer">${a}</dd></div>`;
     });
     html += `</div></div>`;
   });
 
   container.innerHTML = html;
+}
+
+/* =========================================================================
+   NÒT OTOMATIK (endikatif sèlman) — pou kesyon ki gen yon repons objektif
+   ---------------------------------------------------------------------
+   Sèlman kesyon Q4, Q6 ak Q7 gen yon repons verifyab otomatikman. Rès
+   kesyon yo (refleksyon, sitiyasyon, kreyativite) toujou bezwen koreksyon
+   yon fòmatè — nòt sa a se yon èd, li pa ranplase koreksyon imen an.
+========================================================================= */
+function computeAutoScore(){
+  const details = [];
+  let correct = 0, scored = 0;
+  PARTIES.forEach(p=> p.questions.forEach(q=>{
+    if(typeof q.autoScore === "function"){
+      scored++;
+      const a = answerFor(q);
+      const ok = a !== "—" && q.autoScore(a);
+      if(ok) correct++;
+      details.push({ id:q.id, correct: !!ok, reponse:a });
+    }
+  }));
+  return { correct, scored, details };
 }
 
 /* =========================================================================
@@ -1137,22 +1564,27 @@ function buildPayload(){
   const reponses = {};
   PARTIES.forEach(partie=>{
     partie.questions.forEach(q=>{
-      reponses[q.id] = { label:q.label, reponse: answerFor(q) };
+      reponses[q.id] = { label: q.fr.label, labelKreyol: (q.ht && q.ht.label) || "", reponse: answerFor(q) };
     });
   });
+
+  const dureeSecondes = Math.max(0, Math.round((Date.now() - new Date(state.startedAt).getTime())/1000));
 
   return {
     testId: generateTestNumber(),
     createdAt: new Date().toISOString(),
     startedAt: state.startedAt,
     status: "pending_correction",
+    langueUtilisee: state.lang,
     candidat:{
       prenom: val("prenom"), nomFamille: val("nomFamille"), nomComplet: nomCompletAuto(),
       age: val("age"), telephone: val("telephone"), commune: valOrEmpty("commune")
     },
     accesAppareil: radioVal("accesAppareil"),
     reponses: reponses,
-    bonusCommentSource: valOrEmpty("bonusSource")
+    bonusCommentSource: valOrEmpty("bonusSource"),
+    scoreAutomatique: computeAutoScore(),
+    integrite: Object.assign({}, state.integrity, { dureeSecondes })
   };
 }
 
@@ -1168,11 +1600,16 @@ async function submitExam(data){
   }
 
   // ---- MODE RÉEL ----
-  // La fonction Edge attend un JSON avec le dossier complet, plus le
-  // champ "website" (piège à robots, doit rester vide).
-  const payload = Object.assign({}, data, { website: (document.getElementById("website")||{}).value || "" });
+  // Même format d'envoi que le formulaire d'inscription (multipart/form-data
+  // avec un champ "payload" contenant le dossier en JSON, et le champ
+  // "website" comme piège à robots), puisque la fonction Edge réutilisée
+  // ("public-registration") attend cette forme-là. Aucun fichier à joindre
+  // ici (le test n'a pas de téléversement).
+  const fd = new FormData();
+  fd.append("payload", JSON.stringify(data));
+  fd.append("website", (document.getElementById("website")||{}).value || "");
 
-  const headers = { "Content-Type": "application/json" };
+  const headers = {};
   if(CONFIG.SUPABASE_ANON_KEY && CONFIG.SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY"){
     headers["apikey"] = CONFIG.SUPABASE_ANON_KEY;
     headers["Authorization"] = "Bearer " + CONFIG.SUPABASE_ANON_KEY;
@@ -1183,7 +1620,7 @@ async function submitExam(data){
 
   let response;
   try{
-    response = await fetch(CONFIG.API_URL, { method:"POST", headers, body: JSON.stringify(payload), signal: controller.signal });
+    response = await fetch(CONFIG.API_URL, { method:"POST", headers, body: fd, signal: controller.signal });
   }catch(err){
     if(err.name === "AbortError"){
       throw new Error("L'envoi a pris trop de temps (connexion trop lente). Veuillez réessayer, si possible avec une meilleure connexion.");
@@ -1214,14 +1651,16 @@ document.getElementById("btnConfirm").addEventListener("click", async ()=>{
 
   try{
     const result = await submitWithRetry(payload, 2);
+    clearTimeout(saveDraftTimeout); // annule toute sauvegarde de brouillon en attente
+    clearDraft();
     showSuccess(payload, result);
   }catch(err){
     console.error("Échec de l'envoi du test :", err);
     const isNetworkError = err instanceof TypeError;
     const globalError = document.getElementById("globalError");
     document.getElementById("globalErrorText").textContent = isNetworkError
-      ? "Impossible de joindre le serveur. Vérifiez votre connexion internet, puis appuyez de nouveau sur « Envoyer mon test ». Si le problème persiste, contactez l'école directement."
-      : "Une erreur est survenue lors de l'envoi. Veuillez réessayer. (" + err.message + ")";
+      ? t("errNetwork")
+      : t("errServerPrefix") + err.message + ")";
     globalError.style.display = "flex";
     window.scrollTo({top:0, behavior:"smooth"});
   }finally{
@@ -1246,10 +1685,17 @@ async function submitWithRetry(data, attempts){
 /* =========================================================================
    ÉCRAN DE SUCCÈS
 ========================================================================= */
+let lastPayload = null, lastResult = null;
+
 function showSuccess(payload, result){
-  document.getElementById("rx-dossier").textContent = result.testId || payload.testId;
+  lastPayload = payload; lastResult = result;
+  document.getElementById("rx-dossier").textContent = result.testId || result.registrationId || payload.testId;
   document.getElementById("rx-nom").textContent = payload.candidat.nomComplet;
   document.getElementById("rx-date").textContent = new Date(payload.createdAt).toLocaleDateString("fr-FR",{year:"numeric",month:"long",day:"numeric"});
+
+  if(isFormateurMode){
+    document.getElementById("btnPrintFormateur").style.display = "flex";
+  }
 
   document.getElementById("successOverlay").classList.add("show");
   spawnConfetti();
@@ -1280,22 +1726,118 @@ document.getElementById("btnHome").addEventListener("click", ()=>{
   const confettiWrap = document.getElementById("confettiWrap");
   if(confettiWrap) confettiWrap.innerHTML = "";
   form.reset();
+  clearTimeout(saveDraftTimeout); // annule toute sauvegarde de brouillon en attente
+  clearDraft();
   state.step = 1;
   state.startedAt = new Date().toISOString();
+  state.integrity = { blurCount:0, hiddenCount:0 };
   document.querySelectorAll(".error-msg.show").forEach(e=>e.classList.remove("show"));
   document.querySelectorAll(".is-invalid").forEach(e=>e.classList.remove("is-invalid"));
   renderStep();
 });
 document.getElementById("btnWhatsapp").addEventListener("click", ()=>{
   const dossier = document.getElementById("rx-dossier").textContent;
-  const msg = encodeURIComponent(`Bonjour, je viens de compléter le test d'évaluation (n° ${dossier}) et j'aimerais avoir plus d'informations.`);
+  const msg = encodeURIComponent(t("whatsappMsg").replace("{dossier}", dossier));
   window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${msg}`, "_blank");
+});
+
+/* =========================================================================
+   FÈY KOREKSYON POU FÒMATÈ (?formateur=1 nan URL la sèlman)
+   ---------------------------------------------------------------------
+   Ouvre une fenêtre séparée, formatée pour l'impression, avec toutes les
+   réponses du candidat, les indications de correction automatique pour
+   les questions objectives, et la grille d'évaluation (5 domaines /10,
+   total /50) à remplir à la main par le formateur. Jamais montrée au
+   candidat par défaut — accessible uniquement via ?formateur=1 dans
+   l'URL, ce qui reste une simple commodité et non une vraie sécurité.
+========================================================================= */
+function buildFormateurSheetHtml(payload, result){
+  const dossier = (result && (result.testId || result.registrationId)) || payload.testId;
+  const dateStr = new Date(payload.createdAt).toLocaleString("fr-FR", {dateStyle:"long", timeStyle:"short"});
+  const auto = payload.scoreAutomatique || { correct:0, scored:0, details:[] };
+  const autoById = {};
+  auto.details.forEach(d=> autoById[d.id] = d.correct);
+
+  let rowsHtml = "";
+  PARTIES.forEach(partie=>{
+    rowsHtml += `<tr class="partie-row"><td colspan="3"><strong>${partie.id === "partie1" ? "Partie 1 — Connaissances générales" : partie.id === "partie2" ? "Partie 2 — Logique et réflexion" : partie.id === "partie3" ? "Partie 3 — Situations pratiques" : "Partie 4 — Créativité et motivation"}</strong></td></tr>`;
+    partie.questions.forEach((q,i)=>{
+      const num = partie.startIndex + i;
+      const r = payload.reponses[q.id];
+      const auto_flag = (q.id in autoById) ? (autoById[q.id] ? "✔ correct (auto)" : "✘ incorrect (auto)") : "";
+      rowsHtml += `<tr>
+        <td class="num">Q${num}</td>
+        <td class="question">${r.label}</td>
+        <td class="reponse">${(r.reponse||"—").toString().replace(/</g,"&lt;")}${auto_flag ? `<div class="auto-flag">${auto_flag}</div>` : ""}</td>
+      </tr>`;
+    });
+  });
+
+  return `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<title>Feuille de correction — ${dossier}</title>
+<style>
+  body{font-family:Georgia,'Times New Roman',serif;color:#111;max-width:900px;margin:24px auto;padding:0 20px;}
+  h1{font-size:20px;border-bottom:2px solid #111;padding-bottom:8px;}
+  h2{font-size:15px;margin-top:26px;}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}
+  td,th{border:1px solid #999;padding:6px 8px;vertical-align:top;text-align:left;}
+  .identity td{border:none;padding:3px 8px 3px 0;}
+  .num{width:44px;font-weight:bold;}
+  .question{width:38%;}
+  .partie-row td{background:#eee;}
+  .auto-flag{font-size:11px;color:#555;margin-top:3px;font-style:italic;}
+  .grille td{text-align:center;}
+  .grille th{background:#ddd;}
+  .obs-lines div{border-bottom:1px solid #999;height:26px;margin-bottom:4px;}
+  .note{font-size:11.5px;color:#555;margin-top:6px;}
+  @media print{ body{margin:0;} }
+</style></head>
+<body>
+  <h1>Feuille de correction — Test d'évaluation initiale (Informatique)</h1>
+  <table class="identity">
+    <tr><td><strong>N° de test :</strong></td><td>${dossier}</td><td><strong>Date :</strong></td><td>${dateStr}</td></tr>
+    <tr><td><strong>Candidat :</strong></td><td>${payload.candidat.nomComplet}</td><td><strong>Âge :</strong></td><td>${payload.candidat.age}</td></tr>
+    <tr><td><strong>Téléphone :</strong></td><td>${payload.candidat.telephone}</td><td><strong>Langue utilisée :</strong></td><td>${payload.langueUtilisee === "ht" ? "Kreyòl" : "Français"}</td></tr>
+  </table>
+  <p class="note">Indication automatique : ${auto.correct} / ${auto.scored} question(s) objective(s) correctes (Q4, Q6, Q7 — voir détail ci-dessous). Toutes les autres questions nécessitent une correction manuelle.</p>
+
+  <h2>Réponses du candidat</h2>
+  <table>${rowsHtml}</table>
+
+  <h2>Grille d'évaluation (à remplir par le formateur)</h2>
+  <table class="grille">
+    <tr><th>Partie 1<br>Connaissances</th><th>Partie 2<br>Logique</th><th>Partie 3<br>Situations</th><th>Partie 4<br>Créativité</th><th>TOTAL</th></tr>
+    <tr style="height:40px;"><td>___ / 10</td><td>___ / 10</td><td>___ / 10</td><td>___ / 10</td><td>___ / 50</td></tr>
+  </table>
+  <p class="note">Interprétation indicative : 40–50 très bon niveau · 25–39 niveau correct, formation standard recommandée · 10–24 niveau débutant, accompagnement renforcé conseillé · 0–9 grand débutant, module d'initiation recommandé.</p>
+
+  <h2>Observations du formateur</h2>
+  <div class="obs-lines"><div></div><div></div><div></div><div></div></div>
+</body></html>`;
+}
+
+document.getElementById("btnPrintFormateur").addEventListener("click", ()=>{
+  if(!lastPayload) return;
+  const w = window.open("", "_blank");
+  if(!w){ alert("Le navigateur a bloqué l'ouverture de la fenêtre d'impression. Autorisez les pop-ups pour ce site."); return; }
+  w.document.write(buildFormateurSheetHtml(lastPayload, lastResult));
+  w.document.close();
+  w.focus();
+  setTimeout(()=> w.print(), 300);
 });
 
 /* =========================================================================
    DÉMARRAGE
 ========================================================================= */
-renderStep();
+(function init(){
+  const draft = loadDraft();
+  if(draft && draftHasAnyAnswer(draft.fields)){
+    if(draft.lang && draft.lang !== state.lang) applyLanguage(draft.lang);
+    showDraftBanner(draft);
+  }
+  renderStep();
+})();
 
 })();
 </script>
