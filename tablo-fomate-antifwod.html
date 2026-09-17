@@ -66,7 +66,8 @@ button{font-family:inherit;cursor:pointer;}
 .banner-ok{background:#e9f9f1;color:var(--ok-500);border:1px solid #bfe9d3;}
 
 /* ---- Summary stats ---- */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px;}
+@media(max-width:560px){.stats-row{grid-template-columns:repeat(2,1fr);}}
 .stat-tile{background:var(--blue-50);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 12px;text-align:center;}
 .stat-tile .num{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--navy-900);}
 .stat-tile .lbl{font-size:11.5px;color:var(--ink-600);margin-top:2px;}
@@ -331,15 +332,62 @@ function renderResults(submissions, pairs){
   const highCount = pairs.filter(p=>p.riskLevel==="high").length;
   const reviewCount = pairs.filter(p=>p.riskLevel==="review").length;
 
+  const individualFlags = submissions
+    .map(sub => ({ sub, flags: extractCopyFlags(sub) }))
+    .filter(x => x.flags.length > 0)
+    .sort((a,b)=> b.flags.length - a.flags.length);
+  const pastedCount = individualFlags.filter(x => x.flags.some(f=>f.collages>0)).length;
+
   let html = `
     <div class="card">
       <div class="stats-row">
         <div class="stat-tile"><div class="num">${submissions.length}</div><div class="lbl">Dosye analize</div></div>
+        <div class="stat-tile risk-high"><div class="num">${individualFlags.length}</div><div class="lbl">Dosye ak siy kopye</div></div>
         <div class="stat-tile risk-high"><div class="num">${highCount}</div><div class="lbl">Pè risk wo</div></div>
         <div class="stat-tile risk-review"><div class="num">${reviewCount}</div><div class="lbl">Pè pou verifye</div></div>
       </div>
     </div>`;
 
+  // ---- SEKSYON 1 : dosye endividyèl kote nou detekte yon kole reyèl oswa
+  //      yon antre trè sispèk pandan moun nan t ap konpoze. Se sa ki bay
+  //      repons ki pi dirèk a kesyon "ki egzamen ki gen kopye". ----
+  html += `<h2 style="font-size:15px;margin:22px 4px 10px;">📋 Dosye endividyèl ak siy kopye</h2>`;
+  if(individualFlags.length === 0){
+    html += `<div class="card"><div class="empty-state">✓ Okenn siy kole/antre sispèk detekte nan ${submissions.length} dosye yo.</div></div>`;
+  } else {
+    individualFlags.forEach((item, idx)=>{
+      const c = item.sub.candidat || {};
+      const dateStr = item.sub.created_at ? new Date(item.sub.created_at).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"}) : "";
+      const pastedHere = item.flags.some(f=>f.collages>0);
+
+      let qHtml = "";
+      item.flags.forEach(f=>{
+        const tag = f.collages > 0 ? `<span class="sim-pill" style="background:#fdeceb;color:var(--err-500);">Kole ${f.collages}×</span>` : `<span class="sim-pill" style="background:#fdf1de;color:var(--warn-500);">Antre sispèk</span>`;
+        qHtml += `
+          <div class="match-block">
+            <div class="match-head"><span class="qlabel">${QUESTION_LABELS[f.qid] || f.qid}</span>${tag}</div>
+            <div class="match-answers" style="grid-template-columns:1fr;"><div>${escapeHtml(f.reponse)}</div></div>
+          </div>`;
+      });
+
+      html += `
+        <div class="pair-card risk-${pastedHere ? "high" : "review"}">
+          <div class="pair-head" data-toggle-single="${idx}">
+            <div class="names">${c.nomComplet || "—"} ${c.telephone ? "("+c.telephone+")" : ""}
+              <small>${item.sub.test_id || ""} · ${dateStr} · ${item.flags.length} kesyon make</small>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="risk-badge ${pastedHere ? "high" : "review"}">${pastedHere ? "Tèks kole" : "À verifye"}</span>
+              <svg class="icon chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="pair-body" id="singleBody-${idx}">${qHtml}</div>
+        </div>`;
+    });
+  }
+
+  // ---- SEKSYON 2 : konparezon ant kandida (repons ki sanble youn ak lòt) ----
+  html += `<h2 style="font-size:15px;margin:26px 4px 10px;">🔍 Kandida ki gen repons ki sanble</h2>`;
   if(pairs.length === 0){
     html += `<div class="card"><div class="empty-state">✓ Pa gen okenn pè sispèk jwenn nan ${submissions.length} dosye yo analize yo.</div></div>`;
   } else {
@@ -391,10 +439,37 @@ function renderResults(submissions, pairs){
       head.classList.toggle("is-open");
     });
   });
+  resultsArea.querySelectorAll("[data-toggle-single]").forEach(head=>{
+    head.addEventListener("click", ()=>{
+      const idx = head.getAttribute("data-toggle-single");
+      const body = document.getElementById("singleBody-"+idx);
+      body.classList.toggle("show");
+      head.classList.toggle("is-open");
+    });
+  });
 }
 
 function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* =========================================================================
+   SIY KOPYE DIREKTMAN NAN YON SÈL DOSYE (pa konparezon — deteksyon reyèl
+   "paste"/antre sispèk ki te fèt pandan moun nan t ap konpoze, deja anrejistre
+   nan chak repons kesyon lè l soumèt tès la).
+========================================================================= */
+function extractCopyFlags(sub){
+  const flags = [];
+  COMPARABLE_QUESTIONS.forEach(qid=>{
+    const r = sub.reponses && sub.reponses[qid];
+    if(!r || !r.telemetrie) return;
+    const collages = r.telemetrie.collages || 0;
+    const suspect = !!r.telemetrie.suspect;
+    if(collages > 0 || suspect){
+      flags.push({ qid, collages, suspect, reponse: r.reponse });
+    }
+  });
+  return flags;
 }
 
 document.getElementById("btnAnalyze").addEventListener("click", async ()=>{
